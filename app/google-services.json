@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "72004587703",
+    "project_id": "lotalabsand-and-ios",
+    "storage_bucket": "lotalabsand-and-ios.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72004587703:android:99a55372c470782bdebd32",
+        "android_client_info": {
+          "package_name": "com.iotalabs.geoar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72004587703-mpta4fnvh8pdg5jtko9ashko8t0ss374.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPw0GlD_FskxNtby1G2Vyc7d4N-5I4E_8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72004587703-mpta4fnvh8pdg5jtko9ashko8t0ss374.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
