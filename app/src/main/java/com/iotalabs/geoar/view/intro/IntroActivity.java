@@ -28,7 +28,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.iotalabs.geoar.view.enter_name.MyNameActivity;
+import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
 import com.iotalabs.geoar.view.main.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
@@ -121,7 +121,7 @@ public class IntroActivity extends AppCompatActivity {
                         //인텐트 이동
                         if(name.equals("")){//이름이 없으면
                             //이름입력엑티비티 이동
-                            Intent intent = new Intent(IntroActivity.this, MyNameActivity.class);
+                            Intent intent = new Intent(IntroActivity.this, EnterNameActivity.class);
                             startActivity(intent);
                             finish();
                         }

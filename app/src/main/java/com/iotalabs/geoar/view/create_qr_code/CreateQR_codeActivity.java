@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class QRcodeActivity extends AppCompatActivity {
+public class CreateQR_codeActivity extends AppCompatActivity {
     private ImageView iv;
     private String text;
     private String name;
@@ -33,7 +33,7 @@ public class QRcodeActivity extends AppCompatActivity {
         iv = (ImageView)findViewById(R.id.qrcode);
         SharedPreferences prefs = getSharedPreferences("person_name",0);
         name = prefs.getString("name","");
-        text = GetDeviceUUID(QRcodeActivity.this)+"문자열나누기"+name;
+        text = GetDeviceUUID(CreateQR_codeActivity.this)+"문자열나누기"+name;
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try{

@@ -37,7 +37,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.unity3d.player.UnityPlayerActivity;
 
@@ -229,7 +229,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 mCursor = null;
                 mCursor = mDbOpenHelper.getAllColumns2();
                 while (mCursor.moveToNext()) {
-                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(QRcodeActivity.GetDeviceUUID(getContext())))) {
+                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(CreateQR_codeActivity.GetDeviceUUID(getContext())))) {
                         latLngs.add(
                                 new LatLng(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_latitude"))),
                                         Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_longitude")))));

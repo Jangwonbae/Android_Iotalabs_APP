@@ -26,11 +26,11 @@
             android:name="com.iotalabs.geoar.AR_Activity"
             android:exported="false" />
         <activity
-            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQRcodeActivity"
+            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.iotalabs.geoar.view.enter_name.MyNameActivity"
+            android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
@@ -47,7 +47,7 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
         <activity
-            android:name="com.iotalabs.geoar.view.create_qr_code.QRcodeActivity"
+            android:name="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

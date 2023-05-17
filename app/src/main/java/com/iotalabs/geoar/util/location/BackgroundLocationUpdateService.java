@@ -56,7 +56,7 @@ import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.data.Location_All;
 import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.view.main.MainActivity;
-import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -116,7 +116,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                         }
                         String token = task.getResult();
                         task5= new InsertToken();//
-                        task5.execute( "http://" + IP_ADDRESS + "/insertToken.php", QRcodeActivity.GetDeviceUUID(getApplicationContext()),token);
+                        task5.execute( "http://" + IP_ADDRESS + "/insertToken.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()),token);
                     }
                 });
     }
@@ -125,7 +125,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         super.onCreate();
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
         context = this;
-        UUID= QRcodeActivity.GetDeviceUUID(context);
+        UUID= CreateQR_codeActivity.GetDeviceUUID(context);
         p = new ArrayList<>();
         p.add(new LatLng(37.2104, 126.9528));
         p.add( new LatLng(37.2107, 126.9534));

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.example.lotalabsappui.R;
 import com.iotalabs.geoar.view.main.MainActivity;
 
-public class MyNameActivity extends AppCompatActivity {
+public class EnterNameActivity extends AppCompatActivity {
     private EditText nameEdit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class MyNameActivity extends AppCompatActivity {
             SharedPreferences.Editor editor =prefs.edit();
             editor.putString("name",name);
             editor.apply();
-            Intent intent = new Intent(MyNameActivity.this, MainActivity.class);
+            Intent intent = new Intent(EnterNameActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }

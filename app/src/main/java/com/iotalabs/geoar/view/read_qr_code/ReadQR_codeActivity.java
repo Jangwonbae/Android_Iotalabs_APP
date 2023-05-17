@@ -15,12 +15,12 @@ import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.util.network.InsertFriendData;
-import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReadQRcodeActivity extends AppCompatActivity {
+public class ReadQR_codeActivity extends AppCompatActivity {
     private IntentIntegrator qrScan;
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
@@ -71,11 +71,11 @@ public class ReadQRcodeActivity extends AppCompatActivity {
                         finish();
                     }
                     else{
-                        task3 = new InsertFriendData(ReadQRcodeActivity.this);
-                        task3.execute("http://" + IP_ADDRESS + "/insertFriend.php", QRcodeActivity.GetDeviceUUID(getApplicationContext()),
+                        task3 = new InsertFriendData(ReadQR_codeActivity.this);
+                        task3.execute("http://" + IP_ADDRESS + "/insertFriend.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()),
                                 uuidFriend,null,null,nameFriend);
                         getTask= new GetFriendData(getApplicationContext());//친구 위치정보 받기
-                        getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", QRcodeActivity.GetDeviceUUID(getApplicationContext()));
+                        getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()));
                     }
                 }
                 else{

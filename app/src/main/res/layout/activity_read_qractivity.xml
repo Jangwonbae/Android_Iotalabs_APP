@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.iotalabs.geoar.view.read_qr_code.ReadQRcodeActivity">
+    tools:context="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

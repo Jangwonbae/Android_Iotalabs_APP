@@ -22,7 +22,7 @@ import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.main.MainActivity;
-import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private Cursor mCursor;
@@ -35,7 +35,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(token);
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
         task= new InsertToken();//
-        task.execute( "http://" + IP_ADDRESS + "/insertToken.php", QRcodeActivity.GetDeviceUUID(getApplicationContext()),token);
+        task.execute( "http://" + IP_ADDRESS + "/insertToken.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()),token);
     }
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage)
