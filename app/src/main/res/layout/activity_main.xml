@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.iotalabs.geoar.MainActivity">
+    tools:context="com.iotalabs.geoar.view.main.MainActivity">
     <FrameLayout
         android:id="@+id/fab_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.iotalabs.geoar.MainActivity">
+        tools:context="com.iotalabs.geoar.view.main.MainActivity">
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab2"

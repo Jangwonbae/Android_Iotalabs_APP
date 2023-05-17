@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.data;
 
 import android.app.Application;
 import android.location.Location;

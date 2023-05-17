@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.util.network;
 
 import android.os.AsyncTask;
 
@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class InsertData extends AsyncTask<String, Void, String>{
+public class InsertData extends AsyncTask<String, Void, String>{
 
     @Override
     protected void onPreExecute() {

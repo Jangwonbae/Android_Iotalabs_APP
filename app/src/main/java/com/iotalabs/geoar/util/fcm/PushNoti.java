@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.util.fcm;
 
 import android.os.AsyncTask;
 
@@ -9,31 +9,17 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class InsertToken extends AsyncTask<String, Void, String> {
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-    }
-
-
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-
-    }
+public class PushNoti extends AsyncTask<String, Void, String> {
 
 
     @Override
     protected String doInBackground(String... params) {
 
         String UUID = (String)params[1];
-        String Token = (String)params[2];
+        String name = (String)params[2];
 
         String serverURL = (String)params[0];
-        String postParameters = "UUID=" + UUID + "&Token=" + Token;//두번째부턴 &를 붙여야함
-
+        String postParameters = "UUID=" + UUID+ "&name=" + name;//두번째부턴 &를 붙여야함
         try {
 
             URL url = new URL(serverURL);

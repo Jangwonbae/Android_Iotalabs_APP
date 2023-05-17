@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +19,9 @@ import com.example.lotalabsappui.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
+import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.view.read_qr_code.ReadQRcodeActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -103,12 +106,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fab1://qr생성
                 anim();
-                Intent intent = new Intent(MainActivity.this, CreateQR.class);
+                Intent intent = new Intent(MainActivity.this, QRcodeActivity.class);
                 startActivity(intent);
                 break;
             case R.id.fab2://qr스캔
                 anim();
-                Intent intent2 = new Intent(MainActivity.this, ReadQRActivity.class);
+                Intent intent2 = new Intent(MainActivity.this, ReadQRcodeActivity.class);
                 startActivity(intent2);
                 break;
         }

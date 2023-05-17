@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.util.fcm;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -18,8 +18,11 @@ import androidx.core.app.NotificationCompat;
 import com.example.lotalabsappui.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.regex.Pattern;
+import com.iotalabs.geoar.util.network.InsertToken;
+import com.iotalabs.geoar.data.Constants;
+import com.iotalabs.geoar.util.db.DbOpenHelper;
+import com.iotalabs.geoar.view.main.MainActivity;
+import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private Cursor mCursor;
@@ -30,9 +33,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        IP_ADDRESS=Constants.IP_ADDRESS.toString();
+        IP_ADDRESS= Constants.IP_ADDRESS.toString();
         task= new InsertToken();//
-        task.execute( "http://" + IP_ADDRESS + "/insertToken.php",CreateQR.GetDeviceUUID(getApplicationContext()),token);
+        task.execute( "http://" + IP_ADDRESS + "/insertToken.php", QRcodeActivity.GetDeviceUUID(getApplicationContext()),token);
     }
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage)

@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.main;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;

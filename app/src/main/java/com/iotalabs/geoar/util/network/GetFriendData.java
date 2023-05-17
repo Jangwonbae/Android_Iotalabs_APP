@@ -1,8 +1,11 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.util.network;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.iotalabs.geoar.util.db.DbOpenHelper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

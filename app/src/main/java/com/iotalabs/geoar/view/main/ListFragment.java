@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,6 +24,12 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.lotalabsappui.R;
+import com.iotalabs.geoar.data.Constants;
+import com.iotalabs.geoar.view.create_qr_code.QRcodeActivity;
+import com.iotalabs.geoar.util.db.DbOpenHelper;
+import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
+import com.iotalabs.geoar.util.network.GetFriendData;
+import com.iotalabs.geoar.view.main.adapter.friend_list.MyAdapter;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -56,7 +62,7 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
-        IP_ADDRESS=Constants.IP_ADDRESS.toString();
+        IP_ADDRESS= Constants.IP_ADDRESS.toString();
         fr_list = (FrameLayout) view.findViewById(R.id.frame_list);
         fr_list.setVisibility(View.VISIBLE);
         no_f = (TextView) view.findViewById(R.id.no_friend);
@@ -100,9 +106,9 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 task = new DeleteFriendData(getActivity());
-                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php",CreateQR.GetDeviceUUID(getContext()),fData.get(position).UUID,String.valueOf(fData.get(position)._id));
+                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php", QRcodeActivity.GetDeviceUUID(getContext()),fData.get(position).UUID,String.valueOf(fData.get(position)._id));
                 getTask= new GetFriendData(getContext());//친구 위치정보 받기
-                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php",CreateQR.GetDeviceUUID(getContext()));
+                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", QRcodeActivity.GetDeviceUUID(getContext()));
                 //Toast.makeText(getActivity().getApplication(), "정보삭제!", Toast.LENGTH_LONG).show();
                 return true;
             }

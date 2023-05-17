@@ -14,7 +14,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name="com.iotalabs.geoar.Location_All"
+        android:name="com.iotalabs.geoar.data.Location_All"
         android:allowBackup="true"
         android:icon="@mipmap/iotalabs_app_icon"
         android:label="@string/app_name"
@@ -26,11 +26,11 @@
             android:name="com.iotalabs.geoar.AR_Activity"
             android:exported="false" />
         <activity
-            android:name="com.iotalabs.geoar.ReadQRActivity"
+            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQRcodeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.iotalabs.geoar.MyNameActivity"
+            android:name="com.iotalabs.geoar.view.enter_name.MyNameActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
@@ -39,7 +39,7 @@
             android:value="AIzaSyAjdupBJp0BXIPkumIGNrbYwF5ubaE2RR4" />
 
         <activity
-            android:name="com.iotalabs.geoar.MainActivity"
+            android:name="com.iotalabs.geoar.view.main.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
@@ -47,11 +47,11 @@
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
         <activity
-            android:name="com.iotalabs.geoar.CreateQR"
+            android:name="com.iotalabs.geoar.view.create_qr_code.QRcodeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.iotalabs.geoar.IntroActivity"
+            android:name="com.iotalabs.geoar.view.intro.IntroActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -62,14 +62,14 @@
         </activity>
 
         <service
-            android:name="com.iotalabs.geoar.MyFirebaseMessagingService"
+            android:name="com.iotalabs.geoar.util.fcm.MyFirebaseMessagingService"
             android:exported="false"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.iotalabs.geoar.BackgroundLocationUpdateService" />
+        <service android:name="com.iotalabs.geoar.util.location.BackgroundLocationUpdateService" />
     </application>
 
 </manifest>

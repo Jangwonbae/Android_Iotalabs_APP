@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.create_qr_code;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
@@ -16,11 +16,12 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-import java.io.UnsupportedEncodingException;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class CreateQR extends AppCompatActivity {
+public class QRcodeActivity extends AppCompatActivity {
     private ImageView iv;
     private String text;
     private String name;
@@ -32,7 +33,7 @@ public class CreateQR extends AppCompatActivity {
         iv = (ImageView)findViewById(R.id.qrcode);
         SharedPreferences prefs = getSharedPreferences("person_name",0);
         name = prefs.getString("name","");
-        text = GetDeviceUUID(CreateQR.this)+"문자열나누기"+name;
+        text = GetDeviceUUID(QRcodeActivity.this)+"문자열나누기"+name;
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try{
@@ -58,28 +59,21 @@ public class CreateQR extends AppCompatActivity {
         else
         {
             final String androidUniqueID = Settings.Secure.getString( context.getContentResolver(), Settings.Secure.ANDROID_ID );
-            try
+            if ( androidUniqueID != "" )
             {
-                if ( androidUniqueID != "" )
+                deviceUUID = UUID.nameUUIDFromBytes( androidUniqueID.getBytes(StandardCharsets.UTF_8) );
+            }
+            else
+            {
+                final String anotherUniqueID = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+                if ( anotherUniqueID != null )
                 {
-                    deviceUUID = UUID.nameUUIDFromBytes( androidUniqueID.getBytes("utf8") );
+                    deviceUUID = UUID.nameUUIDFromBytes( anotherUniqueID.getBytes(StandardCharsets.UTF_8) );
                 }
                 else
                 {
-                    final String anotherUniqueID = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-                    if ( anotherUniqueID != null )
-                    {
-                        deviceUUID = UUID.nameUUIDFromBytes( anotherUniqueID.getBytes("utf8") );
-                    }
-                    else
-                    {
-                        deviceUUID = UUID.randomUUID();
-                    }
+                    deviceUUID = UUID.randomUUID();
                 }
-            }
-            catch ( UnsupportedEncodingException e )
-            {
-                throw new RuntimeException(e);
             }
         }
         // save cur UUID.

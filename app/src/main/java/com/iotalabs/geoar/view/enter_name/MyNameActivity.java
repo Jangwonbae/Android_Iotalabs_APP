@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.enter_name;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
+import com.iotalabs.geoar.view.main.MainActivity;
 
 public class MyNameActivity extends AppCompatActivity {
     private EditText nameEdit;

@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.util.db;
 
 import android.provider.BaseColumns;
 

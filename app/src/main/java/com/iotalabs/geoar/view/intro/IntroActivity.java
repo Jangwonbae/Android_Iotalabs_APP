@@ -1,4 +1,4 @@
-package com.iotalabs.geoar;
+package com.iotalabs.geoar.view.intro;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +28,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.iotalabs.geoar.view.enter_name.MyNameActivity;
+import com.iotalabs.geoar.view.main.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
     private static final String TAG = IntroActivity.class.getSimpleName();
