@@ -23,9 +23,6 @@
         android:theme="@style/Theme.LotalabsAppUi"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="com.iotalabs.geoar.AR_Activity"
-            android:exported="false" />
-        <activity
             android:name="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -33,10 +30,6 @@
             android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAjdupBJp0BXIPkumIGNrbYwF5ubaE2RR4" />
 
         <activity
             android:name="com.iotalabs.geoar.view.main.MainActivity"
@@ -48,10 +41,6 @@
             tools:replace="screenOrientation" />
         <activity
             android:name="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.iotalabs.geoar.view.intro.IntroActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -60,6 +49,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.iotalabs.geoar.view.intro.IntroActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAjdupBJp0BXIPkumIGNrbYwF5ubaE2RR4" />
 
         <service
             android:name="com.iotalabs.geoar.util.fcm.MyFirebaseMessagingService"

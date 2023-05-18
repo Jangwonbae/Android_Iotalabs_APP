@@ -24,6 +24,7 @@ import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.lotalabsappui.R;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
@@ -56,12 +57,12 @@ public class ListFragment extends Fragment {
     private Activity activity;
     private Handler handler = new Handler();
     private Handler handler2 = new Handler();
-
+    private ClassUUID classUUID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
-
+        classUUID = new ClassUUID();
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
         fr_list = (FrameLayout) view.findViewById(R.id.frame_list);
         fr_list.setVisibility(View.VISIBLE);
@@ -106,9 +107,9 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 task = new DeleteFriendData(getActivity());
-                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php", CreateQR_codeActivity.GetDeviceUUID(getContext()),fData.get(position).UUID,String.valueOf(fData.get(position)._id));
+                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php", classUUID.getDeviceUUID(getContext()),fData.get(position).UUID,String.valueOf(fData.get(position)._id));
                 getTask= new GetFriendData(getContext());//친구 위치정보 받기
-                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", CreateQR_codeActivity.GetDeviceUUID(getContext()));
+                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", classUUID.getDeviceUUID(getContext()));
                 //Toast.makeText(getActivity().getApplication(), "정보삭제!", Toast.LENGTH_LONG).show();
                 return true;
             }

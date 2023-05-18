@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.lotalabsappui.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.util.network.GetFriendData;
@@ -27,11 +28,13 @@ public class ReadQR_codeActivity extends AppCompatActivity {
     private static String IP_ADDRESS;
     private GetFriendData getTask;
     private InsertFriendData task3;
+    private ClassUUID classUUID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_qractivity);
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
+        classUUID = new ClassUUID();
         qrScan = new IntentIntegrator(this);
         qrScan.setOrientationLocked(false); // default가 세로모드인데 휴대폰 방향에 따라 가로, 세로로 자동 변경됩니다.
         qrScan.initiateScan();
@@ -72,10 +75,10 @@ public class ReadQR_codeActivity extends AppCompatActivity {
                     }
                     else{
                         task3 = new InsertFriendData(ReadQR_codeActivity.this);
-                        task3.execute("http://" + IP_ADDRESS + "/insertFriend.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()),
+                        task3.execute("http://" + IP_ADDRESS + "/insertFriend.php", classUUID.getDeviceUUID(getApplicationContext()),
                                 uuidFriend,null,null,nameFriend);
                         getTask= new GetFriendData(getApplicationContext());//친구 위치정보 받기
-                        getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()));
+                        getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", classUUID.getDeviceUUID(getApplicationContext()));
                     }
                 }
                 else{

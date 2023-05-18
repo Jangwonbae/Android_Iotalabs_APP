@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.unity3d.player.UnityPlayerActivity;
@@ -54,7 +55,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private Cursor friendCursor;
     private FloatingActionButton fb_reroad;
     private FloatingActionButton fb_ar;
-
+    private ClassUUID classUUID;
     List<LatLng> latLngs;
     private int[] colors = {
             Color.rgb(102, 225, 0), // green
@@ -75,6 +76,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        classUUID = new ClassUUID();
     }
 
     @Override
@@ -229,7 +231,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 mCursor = null;
                 mCursor = mDbOpenHelper.getAllColumns2();
                 while (mCursor.moveToNext()) {
-                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(CreateQR_codeActivity.GetDeviceUUID(getContext())))) {
+                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(classUUID.getDeviceUUID(getContext())))) {
                         latLngs.add(
                                 new LatLng(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_latitude"))),
                                         Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_longitude")))));

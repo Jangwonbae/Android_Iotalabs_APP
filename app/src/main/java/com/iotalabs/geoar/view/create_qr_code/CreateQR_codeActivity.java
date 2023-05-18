@@ -1,6 +1,10 @@
 package com.iotalabs.geoar.view.create_qr_code;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -11,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import com.example.lotalabsappui.R;
+import com.example.lotalabsappui.databinding.ActivityCreateQrBinding;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -22,62 +27,17 @@ import java.util.Hashtable;
 import java.util.UUID;
 
 public class CreateQR_codeActivity extends AppCompatActivity {
-    private ImageView iv;
-    private String text;
-    private String name;
-    private final static String CACHE_DEVICE_ID = "CacheDeviceID";
+    //{엑티비티명}Binding
+    private ActivityCreateQrBinding binding;
+    private CreateQR_codeViewModel createQRCodeViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_qr);
-        iv = (ImageView)findViewById(R.id.qrcode);
-        SharedPreferences prefs = getSharedPreferences("person_name",0);
-        name = prefs.getString("name","");
-        text = GetDeviceUUID(CreateQR_codeActivity.this)+"문자열나누기"+name;
+        //데이터 바인딩
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_qr);
+        binding.setActivity(this);//레이아웃 파일의 name = activity로 선언했기 때문에 setActivity(), set{변수명}
+        //뷰모델 객체 생성
+        CreateQR_codeViewModel createQR_codeViewModel = new CreateQR_codeViewModel(binding);
 
-        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-        try{
-            Hashtable hints = new Hashtable();
-            hints.put(EncodeHintType.CHARACTER_SET,"utf=8");
-
-            BitMatrix bitMatrix = multiFormatWriter.encode(text, BarcodeFormat.QR_CODE,200,200,hints);
-            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            iv.setImageBitmap(bitmap);
-        }catch (Exception e){}
-    }
-
-    public static String GetDeviceUUID(Context context)
-    {   //QR만들기
-        UUID deviceUUID = null;
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences( context );
-        String cachedDeviceID = sharedPreferences.getString(CACHE_DEVICE_ID, "");
-        if ( cachedDeviceID != "" )
-        {
-            deviceUUID = UUID.fromString( cachedDeviceID );
-        }
-        else
-        {
-            final String androidUniqueID = Settings.Secure.getString( context.getContentResolver(), Settings.Secure.ANDROID_ID );
-            if ( androidUniqueID != "" )
-            {
-                deviceUUID = UUID.nameUUIDFromBytes( androidUniqueID.getBytes(StandardCharsets.UTF_8) );
-            }
-            else
-            {
-                final String anotherUniqueID = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-                if ( anotherUniqueID != null )
-                {
-                    deviceUUID = UUID.nameUUIDFromBytes( anotherUniqueID.getBytes(StandardCharsets.UTF_8) );
-                }
-                else
-                {
-                    deviceUUID = UUID.randomUUID();
-                }
-            }
-        }
-        // save cur UUID.
-        sharedPreferences.edit().putString(CACHE_DEVICE_ID, deviceUUID.toString()).apply();
-        return deviceUUID.toString();
     }
 }

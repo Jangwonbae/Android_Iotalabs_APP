@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.PolyUtil;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.util.network.GetData;
 import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.util.network.InsertData;
@@ -103,7 +104,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private NotificationCompat.Builder builder;
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
 
-
+    private ClassUUID classUUID;
 
     public void getToken(){
         FirebaseMessaging.getInstance().getToken()
@@ -116,7 +117,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                         }
                         String token = task.getResult();
                         task5= new InsertToken();//
-                        task5.execute( "http://" + IP_ADDRESS + "/insertToken.php", CreateQR_codeActivity.GetDeviceUUID(getApplicationContext()),token);
+                        task5.execute( "http://" + IP_ADDRESS + "/insertToken.php", classUUID.getDeviceUUID(getApplicationContext()),token);
                     }
                 });
     }
@@ -124,8 +125,9 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     public void onCreate() {
         super.onCreate();
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
+        classUUID=new ClassUUID();
         context = this;
-        UUID= CreateQR_codeActivity.GetDeviceUUID(context);
+        UUID= classUUID.getDeviceUUID(context);
         p = new ArrayList<>();
         p.add(new LatLng(37.2104, 126.9528));
         p.add( new LatLng(37.2107, 126.9534));
