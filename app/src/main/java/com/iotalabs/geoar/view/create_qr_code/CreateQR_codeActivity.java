@@ -41,7 +41,7 @@ public class CreateQR_codeActivity extends AppCompatActivity {
         makeQR_code();//뷰는 QR코드를 만들 줄만 알면되고 포함하는 정보는 뷰모델에서 정함
     }
 
-    void makeQR_code(){//QR코드 생성
+    private void makeQR_code(){//QR코드 생성
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try{
             Hashtable hints = new Hashtable();

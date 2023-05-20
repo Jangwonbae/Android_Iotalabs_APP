@@ -28,8 +28,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
         <activity
             android:name="com.iotalabs.geoar.view.main.MainActivity"
@@ -42,13 +49,7 @@
         <activity
             android:name="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.iotalabs.geoar.view.intro.IntroActivity"
             android:exported="true"

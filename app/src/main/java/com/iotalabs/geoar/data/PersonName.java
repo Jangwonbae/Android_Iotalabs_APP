@@ -8,9 +8,14 @@ public class PersonName {
     private SharedPreferences prefs;
     public PersonName(Context context){
         prefs = context.getSharedPreferences("person_name",0);
-        this.name = prefs.getString("name","");
     }
     public String getName(){
+        this.name = prefs.getString("name","");
         return name;
+    }
+    public void setName(String Entered_name){
+        SharedPreferences.Editor editor =prefs.edit();
+        editor.putString("name",Entered_name);
+        editor.apply();
     }
 }

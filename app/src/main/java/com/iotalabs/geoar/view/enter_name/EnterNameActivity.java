@@ -1,6 +1,7 @@
 package com.iotalabs.geoar.view.enter_name;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,31 +11,29 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
+import com.example.lotalabsappui.databinding.ActivityEnterNameBinding;
 import com.iotalabs.geoar.view.main.MainActivity;
 
 public class EnterNameActivity extends AppCompatActivity {
-    private EditText nameEdit;
+    //{엑티비티명}Binding
+    private ActivityEnterNameBinding binding;
+    private EnterNameViewModel enterNameViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_name);
+        //데이터 바인딩
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_enter_name);
+        binding.setActivity(this);//레이아웃 파일의 name = activity로 선언했기 때문에 setActivity(), set{변수명}
+        enterNameViewModel = new EnterNameViewModel(binding);
 
-        nameEdit = (EditText)findViewById(R.id.myName);
-    }
-    public void mOnClick(View v){
-        String name = nameEdit.getText().toString();
-        if(name.trim().equals("")){
-            Toast.makeText(this, "이름을 입력하세요.", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            SharedPreferences prefs = getSharedPreferences("person_name",0);
-            SharedPreferences.Editor editor =prefs.edit();
-            editor.putString("name",name);
-            editor.apply();
-            Intent intent = new Intent(EnterNameActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        //mvvm 패턴을 적용했기 때문에 뷰는 입력만 받고 데이터의 저장은 뷰모델이 처리
+       binding.btnStart.setOnClickListener(new View.OnClickListener() {//시작하기 버튼 클릭 리스너
+            @Override
+            public void onClick(View v) {
+                //뷰모델에서 이름 pref에 저장
+                enterNameViewModel.enterName(binding.editTextName.getText().toString());
+            }
+        });
     }
 }
