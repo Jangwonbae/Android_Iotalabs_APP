@@ -37,7 +37,20 @@ public class CreateQR_codeActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_qr);
         binding.setActivity(this);//레이아웃 파일의 name = activity로 선언했기 때문에 setActivity(), set{변수명}
         //뷰모델 객체 생성
-        CreateQR_codeViewModel createQR_codeViewModel = new CreateQR_codeViewModel(binding);
+        createQRCodeViewModel = new CreateQR_codeViewModel(binding);
+        makeQR_code();//뷰는 QR코드를 만들 줄만 알면되고 포함하는 정보는 뷰모델에서 정함
+    }
 
+    void makeQR_code(){//QR코드 생성
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try{
+            Hashtable hints = new Hashtable();
+            hints.put(EncodeHintType.CHARACTER_SET,"utf=8");
+            //QR코드의 포함되는 정보는 동적으로 변하는 데이터가 아니기 떄문에 get_QR_text()를 호출하여 사용
+            BitMatrix bitMatrix = multiFormatWriter.encode(createQRCodeViewModel.get_QR_text(), BarcodeFormat.QR_CODE,200,200,hints);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            binding.qrCode.setImageBitmap(bitmap);
+        }catch (Exception e){}
     }
 }
