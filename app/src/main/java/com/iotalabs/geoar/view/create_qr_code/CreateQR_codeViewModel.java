@@ -1,6 +1,7 @@
 package com.iotalabs.geoar.view.create_qr_code;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
@@ -19,25 +20,21 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 import java.util.Hashtable;
 import java.util.UUID;
 
-public class CreateQR_codeViewModel {
+public class CreateQR_codeViewModel extends ViewModel{
     private PersonName personName;
     private ClassUUID classUUID;
     private String name;
     private String UUID;
     private String QR_text;
-    private ActivityCreateQrBinding binding;
-    CreateQR_codeViewModel(ActivityCreateQrBinding binding){
 
-        //이름 가져오기
-        personName=new PersonName(binding.getActivity().getApplicationContext());//Context
+    public void set_QR_text(Context contxt){
+        personName=PersonName.getInstance(contxt);
         this.name=personName.getName();
-        //UUID 객체 생성
         classUUID = new ClassUUID();
-        this.UUID=classUUID.getDeviceUUID(binding.getActivity().getApplicationContext());//Context
-        //UUID를 가져와서 이름과 결합
+        this.UUID=classUUID.getDeviceUUID(contxt);
         this.QR_text = UUID+"문자열나누기"+name;
-
     }
+
     public String get_QR_text(){
         return QR_text;
     }

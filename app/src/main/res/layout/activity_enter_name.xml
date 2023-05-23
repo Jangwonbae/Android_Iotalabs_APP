@@ -5,8 +5,8 @@
 
     <data >
         <variable
-            name="activity"
-            type="com.iotalabs.geoar.view.enter_name.EnterNameActivity" />
+            name="viewModel"
+            type="com.iotalabs.geoar.view.enter_name.EnterNameViewModel" />
     </data>
 <LinearLayout
     android:layout_width="match_parent"

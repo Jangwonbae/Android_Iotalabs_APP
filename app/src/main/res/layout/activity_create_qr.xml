@@ -4,8 +4,8 @@
 
     <data >
         <variable
-            name="activity"
-            type="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity" />
+            name="viewModel"
+            type="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

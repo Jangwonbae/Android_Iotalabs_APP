@@ -1,32 +1,23 @@
 package com.iotalabs.geoar.view.enter_name;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.widget.Toast;
-
-import com.example.lotalabsappui.databinding.ActivityEnterNameBinding;
+import android.content.Context;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import com.iotalabs.geoar.data.PersonName;
-import com.iotalabs.geoar.view.main.MainActivity;
 
-public class EnterNameViewModel {
-    private ActivityEnterNameBinding binding;
+public class EnterNameViewModel extends ViewModel {
     private PersonName personName;
+    MutableLiveData<String> enterNameLiveData = new MutableLiveData<>();
 
-    EnterNameViewModel(ActivityEnterNameBinding binding){
-        this.binding=binding;
-    }
-    public void enterName(String name){
-        if(name.trim().equals("")){
-            Toast.makeText(binding.getActivity().getApplicationContext(), "이름을 입력하세요.", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            personName = new PersonName(binding.getActivity().getApplicationContext());
-            //이름을 prefs에 저장
+    public void enterName(String name, Context context){//이름을 입력했을 때 실행
+
+        personName = PersonName.getInstance(context);
+        //liveData의 값을 전달받은 name으로 설정
+        enterNameLiveData.setValue(name);
+        //""이 아닐경우
+        if(!enterNameLiveData.getValue().trim().equals("")){
+            //이름을 preference에 저장
             personName.setName(name);
-            //메인 엑티비티 이동
-            Intent intent = new Intent(binding.getActivity().getApplicationContext(), MainActivity.class);
-            binding.getActivity().startActivity(intent);
-            binding.getActivity().finish();
         }
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityCreateQrBinding;
@@ -35,13 +36,16 @@ public class CreateQR_codeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_qr);
-        binding.setActivity(this);//레이아웃 파일의 name = activity로 선언했기 때문에 setActivity(), set{변수명}
+        //뷰모델 생성
+        createQRCodeViewModel= new ViewModelProvider(this).get(CreateQR_codeViewModel.class);
+        //엑티비티에 뷰모델 연결
+        binding.setViewModel(createQRCodeViewModel);//레이아웃 파일의 name = viewModel로 선언했기 때문에 setviewModel(), set{변수명}
         //뷰모델 객체 생성
-        createQRCodeViewModel = new CreateQR_codeViewModel(binding);
         makeQR_code();//뷰는 QR코드를 만들 줄만 알면되고 포함하는 정보는 뷰모델에서 정함
     }
 
     private void makeQR_code(){//QR코드 생성
+        createQRCodeViewModel.set_QR_text(this.getBaseContext());
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try{
             Hashtable hints = new Hashtable();
