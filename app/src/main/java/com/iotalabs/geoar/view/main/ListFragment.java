@@ -8,30 +8,27 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.lotalabsappui.R;
+import com.example.lotalabsappui.databinding.FragmentListBinding;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.Constants;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
 import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.view.main.adapter.friend_list.MyAdapter;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,68 +39,70 @@ import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
 
-    private ListView fList;
+    private FragmentListBinding binding;
+    private ListView friendListView;
     private MyAdapter myAdapter;
     public static ArrayList<FriendData> fData = new ArrayList<>();
-
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
     private FriendData friendData;
-    private TextView no_f;
-    private FrameLayout fr_list;
     private GetFriendData getTask;
     private static String IP_ADDRESS;
     private DeleteFriendData task;
-    private Activity activity;
     private Handler handler = new Handler();
     private Handler handler2 = new Handler();
     private ClassUUID classUUID;
+    private SwipeMenuListView swipeMenuListView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        //Fragment 바인딩
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
+        binding.setFragment(this);
+
         classUUID = new ClassUUID();
-        IP_ADDRESS= Constants.IP_ADDRESS.toString();
-        fr_list = (FrameLayout) view.findViewById(R.id.frame_list);
-        fr_list.setVisibility(View.VISIBLE);
-        no_f = (TextView) view.findViewById(R.id.no_friend);
+        IP_ADDRESS= Constants.IP_ADDRESS;
+
+        //binding.frameLayoutFragent.setVisibility(View.VISIBLE);//왜필요한가
+
         mDbOpenHelper = new DbOpenHelper(getActivity());
 
-        fList=(SwipeMenuListView)view.findViewById(R.id.friendList);
+        friendListView = binding.swipeMenuListFriend;
         myAdapter=new MyAdapter(getContext(),fData);
-        fList.setAdapter(myAdapter);
+        friendListView.setAdapter(myAdapter);
 
         doWhileCursorToArray();
 
         // 데이터 입력받을 Adapter 생성
-        // fragment에서는 'this' 사용이 불가하므로, Activity의 참조 획득이 가능한 getActivity()함수 사용
+
 
         // 땡길수 있는 리스트 생성
-        SwipeMenuListView listview;
-        listview = (SwipeMenuListView) view.findViewById(R.id.friendList);
-        listview.setAdapter(myAdapter);
-        listview.setMenuCreator(creator);
-        listview.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
+
+        swipeMenuListView = binding.swipeMenuListFriend;
+        swipeMenuListView.setAdapter(myAdapter);
+        swipeMenuListView.setMenuCreator(creator);
+        swipeMenuListView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
             @Override
             public void onSwipeStart(int position) {
                 // swipe start
-                listview.smoothOpenMenu(position);
+                swipeMenuListView.smoothOpenMenu(position);
             }
 
             @Override
             public void onSwipeEnd(int position) {
                 // swipe end
-                listview.smoothOpenMenu(position);
+                swipeMenuListView.smoothOpenMenu(position);
             }
         });
 
-        fList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
             }
         });
-        listview.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+        swipeMenuListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 task = new DeleteFriendData(getActivity());
@@ -116,7 +115,7 @@ public class ListFragment extends Fragment {
         });
         //////////
 
-        return view;
+        return binding.getRoot();
     }
     @Override
     public void onStart() {
@@ -167,10 +166,10 @@ public class ListFragment extends Fragment {
         }
         mCursor.close();
         if(fData.isEmpty()){
-            no_f.setVisibility(View.VISIBLE);
+            binding.textViewNoFriend.setVisibility(View.VISIBLE);
         }
         else {
-            no_f.setVisibility(View.INVISIBLE);
+            binding.textViewNoFriend.setVisibility(View.INVISIBLE);
         }
         mDbOpenHelper.close();
         myAdapter.notifyDataSetChanged();

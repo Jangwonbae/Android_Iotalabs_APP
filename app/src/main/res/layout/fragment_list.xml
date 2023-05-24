@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.iotalabs.geoar.view.main.ListFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data >
+        <variable
+            name="fragment"
+            type="com.iotalabs.geoar.view.main.ListFragment" />
+    </data>
 
     <FrameLayout
-        android:id="@+id/frame_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants">
-        <com.baoyz.swipemenulistview.SwipeMenuListView
-            android:id="@+id/friendList"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent">
-        </com.baoyz.swipemenulistview.SwipeMenuListView>
+        android:layout_height="match_parent"
+        tools:context="com.iotalabs.geoar.view.main.ListFragment">
 
-    </FrameLayout>
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/no_friend"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/frame_layout_fragent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="친구가 없습니다. 친구를 등록해주세요."
-            android:textSize="16dp" />
+            android:descendantFocusability="blocksDescendants">
+
+            <com.baoyz.swipemenulistview.SwipeMenuListView
+                android:id="@+id/swipe_menu_list_friend"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"></com.baoyz.swipemenulistview.SwipeMenuListView>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_view_no_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="친구가 없습니다. 친구를 등록해주세요."
+                android:textSize="16dp" />
+        </FrameLayout>
+
+
     </FrameLayout>
-
-
-</FrameLayout>
+</layout>

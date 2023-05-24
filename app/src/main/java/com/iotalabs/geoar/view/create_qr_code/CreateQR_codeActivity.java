@@ -9,6 +9,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.ImageView;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -55,6 +56,8 @@ public class CreateQR_codeActivity extends AppCompatActivity {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             binding.qrCode.setImageBitmap(bitmap);
-        }catch (Exception e){}
+        }catch (Exception e){
+            Log.e("createQR",e.toString());
+        }
     }
 }
