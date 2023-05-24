@@ -14,6 +14,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
+import com.example.lotalabsappui.databinding.FragmentMapBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -47,14 +49,13 @@ import java.util.List;
 
 
 public class MapFragment extends Fragment  implements OnMapReadyCallback  {
-    private static final String TAG = "MapsFragment";
+    private FragmentMapBinding binding;
     private GoogleMap mMap;
     private MapView mapView = null;
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
     private Cursor friendCursor;
-    private FloatingActionButton fb_reroad;
-    private FloatingActionButton fb_ar;
+
     private ClassUUID classUUID;
     List<LatLng> latLngs;
     private int[] colors = {
@@ -81,42 +82,32 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_map, container, false);
-        fb_reroad = layout.findViewById(R.id.fb_reroad);
-        fb_reroad.setOnClickListener(new View.OnClickListener() {  //플로팅 버튼 이벤트
+        //데어터 바인딩
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_map,container,false);
+
+        binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
             @Override
             public void onClick(View v) {
-                int id = v.getId();
-                switch (id) {
-                    case R.id.fb_reroad:
-                        reloadMap(); // 새로고침 버튼 이벤트 !
-                        break;
-            }
+                //맵갱신
+                reNewMap();
         }});
 
-        ///////////////////////////////////////////////////////////////////////////////////////
-        fb_ar = layout.findViewById(R.id.fb_AR);
-        fb_ar.setOnClickListener(new View.OnClickListener() {  //플로팅 버튼 이벤트
+        binding.ftBtnGoAR.setOnClickListener(new View.OnClickListener() {  //AR버튼 이벤트
             @Override
             public void onClick(View v) {
-                int id = v.getId();
-                switch (id) {
-                    case R.id.fb_AR://AR 카메라로 이동
-                        Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
-                        startActivity(intent);
-                        break;
-                }
+                //AR화면으로 이동
+                Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
+                startActivity(intent);
             }});
-        ////////////////////////////////////////////////////////////////////////////////////////
 
 
-        mapView = (MapView) layout.findViewById(R.id.map);
+        mapView = binding.map;
         mapView.getMapAsync(this);
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
         }
 
-        return layout;
+        return binding.getRoot();
     }
 
     @Override
@@ -267,7 +258,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                         new LatLng(37.2111, 126.9504)
                      ));
     }
-    public void reloadMap(){
+    public void reNewMap(){
         mMap.clear();
         createMyLocation();
         createFriendMarker();

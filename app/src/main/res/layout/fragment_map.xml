@@ -1,51 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.iotalabs.geoar.view.main.MapFragment">
-
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="fragment"
+            type="com.iotalabs.geoar.view.main.MapFragment" />
+    </data>
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:context="com.iotalabs.geoar.view.main.MapFragment">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fb_reroad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:layout_marginTop="54dp"
-        android:layout_marginRight="6.5dp"
-        android:background="#80FFFFFF"
-        android:onClick="onClick"
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        android:soundEffectsEnabled="true"
-        android:src="@drawable/ic_baseline_autorenew_new"
-        app:backgroundTint="#A8FFFFFF"
-        app:tint="#686868"
-        app:fabSize="mini"
-        app:pressedTranslationZ="6.5dp"
-        app:rippleColor="#2C2C2C" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ft_btn_renew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_marginTop="54dp"
+            android:layout_marginRight="6.5dp"
+            android:background="#80FFFFFF"
+            android:onClick="onClick"
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        app:shapeAppearanceOverlay="@style/fab_3_rounded"
-        android:id="@+id/fb_AR"
-        app:maxImageSize="40dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:background="#80FFFFFF"
-        android:onClick="onClick"
-        android:soundEffectsEnabled="true"
-        android:src="@drawable/ar_icon"
-        app:backgroundTint="#DCDCDC"
-        app:tint="#686868"
-        app:pressedTranslationZ="6.5dp"
-        app:rippleColor="#2C2C2C" />
+            android:soundEffectsEnabled="true"
+            android:src="@drawable/ic_baseline_autorenew_new"
+            app:backgroundTint="#A8FFFFFF"
+            app:tint="#686868"
+            app:fabSize="mini"
+            app:pressedTranslationZ="6.5dp"
+            app:rippleColor="#2C2C2C" />
 
-</FrameLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            app:shapeAppearanceOverlay="@style/fab_3_rounded"
+            android:id="@+id/ft_btn_goAR"
+            app:maxImageSize="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:background="#80FFFFFF"
+            android:onClick="onClick"
+            android:soundEffectsEnabled="true"
+            android:src="@drawable/ar_icon"
+            app:backgroundTint="#DCDCDC"
+            app:tint="#686868"
+            app:pressedTranslationZ="6.5dp"
+            app:rippleColor="#2C2C2C" />
+
+    </FrameLayout>
+</layout>
