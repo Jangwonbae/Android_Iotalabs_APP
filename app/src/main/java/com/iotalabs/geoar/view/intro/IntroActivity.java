@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -17,6 +19,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.example.lotalabsappui.R;
+import com.example.lotalabsappui.databinding.ActivityIntroBinding;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -28,26 +31,32 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.iotalabs.geoar.data.PersonName;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
 import com.iotalabs.geoar.view.main.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
+    private ActivityIntroBinding binding;
+    private IntroViewModel introViewModel;
     private static final String TAG = IntroActivity.class.getSimpleName();
     private static final int GPS_UTIL_LOCATION_PERMISSION_REQUEST_CODE = 100;
     private static final int GPS_UTIL_LOCATION_RESOLUTION_REQUEST_CODE = 101;
-
     public static final int DEFAULT_LOCATION_REQUEST_PRIORITY = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
     public static final long DEFAULT_LOCATION_REQUEST_INTERVAL = 2000L;//최대2초
     public static final long DEFAULT_LOCATION_REQUEST_FAST_INTERVAL = 2000L;//최대2초
-
-    private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationRequest locationRequest;
-    private double longitude, latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
+        //데이터 바인딩
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
+        //뷰모델 생성
+        introViewModel= new ViewModelProvider(this).get(IntroViewModel.class);
+        //엑티비티에 뷰모델 연결
+        binding.setViewModel(introViewModel);//레이아웃 파일의 name = viewModel로 선언했기 때문에 setviewModel(), set{변수명}
+        //뷰모델 객체 생성
 
     }
 
@@ -67,6 +76,7 @@ public class IntroActivity extends AppCompatActivity {
         }
     }
 
+    //요청한 결과를 확인
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -74,8 +84,10 @@ public class IntroActivity extends AppCompatActivity {
             for (int i = 0; i < permissions.length; i++) {
                 if (Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[i])) {
                     if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        //위치권한이 확인됐을 때
                         checkLocationPermission();
                     } else {
+                        //확인 되지 않을 때 팝업을 띄움
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
                         builder.setTitle("위치 권한이 꺼져있습니다.");
                         builder.setMessage("[권한] 설정에서 위치 권한을 허용해야 합니다.");
@@ -104,6 +116,7 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     private void checkLocationSetting() {
+        //GPS 설정을 확인
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(DEFAULT_LOCATION_REQUEST_PRIORITY);
         locationRequest.setInterval(DEFAULT_LOCATION_REQUEST_INTERVAL);
@@ -115,8 +128,8 @@ public class IntroActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                            SharedPreferences prefs = getSharedPreferences("person_name",0);
-                            String name = prefs.getString("name","");
+                        PersonName personName = PersonName.getInstance(getBaseContext());
+                        String name = personName.getName();
 
                         //인텐트 이동
                         if(name.equals("")){//이름이 없으면

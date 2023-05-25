@@ -22,13 +22,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LotalabsAppUi"
         android:usesCleartextTraffic="true">
+
         <activity
-            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
-            android:exported="true">
+            android:name="com.iotalabs.geoar.view.intro.IntroActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,24 +34,32 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
+            android:exported="true"/>
 
         <activity
             android:name="com.iotalabs.geoar.view.main.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
+
         <activity
             android:name="com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity"
-            android:exported="true"/>
-        <activity
-            android:name="com.iotalabs.geoar.view.intro.IntroActivity"
-            android:exported="true"
-            android:screenOrientation="portrait">
+            android:exported="true" />
 
-        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAjdupBJp0BXIPkumIGNrbYwF5ubaE2RR4" />
