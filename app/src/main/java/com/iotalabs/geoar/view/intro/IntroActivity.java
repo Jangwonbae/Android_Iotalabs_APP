@@ -38,7 +38,6 @@ import com.iotalabs.geoar.view.main.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
     private ActivityIntroBinding binding;
-    private IntroViewModel introViewModel;
     private static final String TAG = IntroActivity.class.getSimpleName();
     private static final int GPS_UTIL_LOCATION_PERMISSION_REQUEST_CODE = 100;
     private static final int GPS_UTIL_LOCATION_RESOLUTION_REQUEST_CODE = 101;
@@ -52,11 +51,8 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
-        //뷰모델 생성
-        introViewModel= new ViewModelProvider(this).get(IntroViewModel.class);
         //엑티비티에 뷰모델 연결
-        binding.setViewModel(introViewModel);//레이아웃 파일의 name = viewModel로 선언했기 때문에 setviewModel(), set{변수명}
-        //뷰모델 객체 생성
+        binding.setActivity(this);
 
     }
 

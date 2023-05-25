@@ -130,16 +130,19 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 //replace 위에 쌓여진 Fragement들을 버려버리고 새로운 Fragment를 쌓음
                 fragmentTransaction.replace(R.id.fragment_container_view_main, mapFragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
 
             case 1:
                 fragmentTransaction.replace(R.id.fragment_container_view_main, listFragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
 
             case 2:
                 fragmentTransaction.replace(R.id.fragment_container_view_main, settingFragment);
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
 

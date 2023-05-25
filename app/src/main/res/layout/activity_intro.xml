@@ -4,8 +4,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.iotalabs.geoar.view.intro.IntroViewModel" />
+            name="activity"
+            type="com.iotalabs.geoar.view.intro.IntroActivity" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
