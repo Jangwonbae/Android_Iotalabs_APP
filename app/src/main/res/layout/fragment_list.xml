@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data >
         <variable
-            name="fragment"
-            type="com.iotalabs.geoar.view.main.ListFragment" />
+            name="viewModel"
+            type="com.iotalabs.geoar.view.main.MainFragmentViewModel" />
     </data>
 
     <FrameLayout

@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ import java.util.List;
 
 public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private FragmentMapBinding binding;
+    private MainFragmentViewModel mainFragmentViewModel;
     private GoogleMap mMap;
     private MapView mapView = null;
     private DbOpenHelper mDbOpenHelper;
@@ -84,6 +86,11 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //데어터 바인딩
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_map,container,false);
+        //뷰모델 생성
+        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        //뷰모델 연결
+        binding.setViewModel(mainFragmentViewModel);
+
 
         binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
             @Override

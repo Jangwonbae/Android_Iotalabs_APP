@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="fragment"
-            type="com.iotalabs.geoar.view.main.MapFragment" />
+            name="viewModel"
+            type="com.iotalabs.geoar.view.main.MainFragmentViewModel" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"

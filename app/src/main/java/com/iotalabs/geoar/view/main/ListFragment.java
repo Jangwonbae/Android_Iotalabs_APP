@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 public class ListFragment extends Fragment {
 
     private FragmentListBinding binding;
+    private MainFragmentViewModel mainFragmentViewModel;
     private ListView friendListView;
     private MyAdapter myAdapter;
     public static ArrayList<FriendData> fData = new ArrayList<>();
@@ -59,7 +62,10 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Fragment 바인딩
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
-        binding.setFragment(this);
+        //뷰모델 생성
+        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        //뷰모델 연결
+        binding.setViewModel(mainFragmentViewModel);
 
         classUUID = new ClassUUID();
         IP_ADDRESS= Constants.IP_ADDRESS;
