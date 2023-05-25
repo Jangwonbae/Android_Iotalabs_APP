@@ -27,16 +27,18 @@
             android:name="com.iotalabs.geoar.view.intro.IntroActivity"
             android:exported="true"
             android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+            android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name="com.iotalabs.geoar.view.enter_name.EnterNameActivity"
-            android:exported="true"/>
 
         <activity
             android:name="com.iotalabs.geoar.view.main.MainActivity"

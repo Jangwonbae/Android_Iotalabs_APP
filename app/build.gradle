@@ -66,7 +66,8 @@ dependencies {
     //unity 연동
     implementation project(':unityLibrary')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar'])
-
+    //EventLiveData (“SingleLiveData with multiple observers”)
+    implementation 'com.rugovit.eventlivedata:eventlivedata:1.0'
 }
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'

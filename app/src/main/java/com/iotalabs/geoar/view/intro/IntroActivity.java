@@ -51,7 +51,6 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
-        //엑티비티에 뷰모델 연결
         binding.setActivity(this);
 
     }

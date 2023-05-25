@@ -64,7 +64,6 @@ public class ListFragment extends Fragment {
         classUUID = new ClassUUID();
         IP_ADDRESS= Constants.IP_ADDRESS;
 
-        //binding.frameLayoutFragent.setVisibility(View.VISIBLE);//왜필요한가
 
         mDbOpenHelper = new DbOpenHelper(getActivity());
 
