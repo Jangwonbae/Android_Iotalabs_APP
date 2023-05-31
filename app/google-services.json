@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "72004587703",
-    "project_id": "lotalabsand-and-ios",
-    "storage_bucket": "lotalabsand-and-ios.appspot.com"
+    "project_number": "39764305502",
+    "firebase_url": "https://fcm-test-f0fc6-default-rtdb.firebaseio.com",
+    "project_id": "fcm-test-f0fc6",
+    "storage_bucket": "fcm-test-f0fc6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:72004587703:android:99a55372c470782bdebd32",
+        "mobilesdk_app_id": "1:39764305502:android:c7af3f1aed711b6527b6cf",
         "android_client_info": {
           "package_name": "com.iotalabs.geoar"
         }
       },
       "oauth_client": [
         {
-          "client_id": "72004587703-mpta4fnvh8pdg5jtko9ashko8t0ss374.apps.googleusercontent.com",
+          "client_id": "39764305502-uvsar85401nl05kp39fdchghs7ljqe60.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDPw0GlD_FskxNtby1G2Vyc7d4N-5I4E_8"
+          "current_key": "AIzaSyD5JokmWE5AJQ1sIYuZSkJ4y9tOfSyi0Jg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "72004587703-mpta4fnvh8pdg5jtko9ashko8t0ss374.apps.googleusercontent.com",
+              "client_id": "39764305502-uvsar85401nl05kp39fdchghs7ljqe60.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "39764305502-pjauj7cq6jg03aqj3sb9t25iu6h2p1s1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "wonbae.Lotalabs"
+              }
             }
           ]
         }

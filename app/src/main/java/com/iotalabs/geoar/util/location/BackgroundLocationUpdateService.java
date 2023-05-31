@@ -22,6 +22,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -58,8 +59,6 @@ import com.iotalabs.geoar.data.Location_All;
 import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.view.main.MainActivity;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
