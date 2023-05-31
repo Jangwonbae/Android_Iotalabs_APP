@@ -47,9 +47,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.ClassUUID;
+import com.iotalabs.geoar.data.PersonLocation;
 import com.iotalabs.geoar.util.network.GetData;
 import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.util.network.InsertData;
@@ -60,7 +63,9 @@ import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.view.main.MainActivity;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -105,6 +110,13 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
 
     private ClassUUID classUUID;
 
+    private DatabaseReference mDatabase;
+    private PersonLocation personLocation;
+    private long mNow;
+    private Date mDate;
+    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+
     public void getToken(){
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -139,6 +151,9 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         p.add( new LatLng(37.2132, 126.9503));
         p.add( new LatLng(37.2122, 126.9495));
         p.add( new LatLng(37.2111, 126.9504));
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        personLocation = PersonLocation.getInstance();
     }
 
     @Override
@@ -152,8 +167,8 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                 try {
                     if (!stopService) {
                         //Perform your task here
-                        task = new InsertData();//내 위치정보 보내기
-                        task.execute("http://" + IP_ADDRESS + "/insert.php", UUID,str_latitude,str_longitude);//서버에 전송
+                        mDatabase.child(UUID).setValue(personLocation);
+                        
                         task2= new GetData(context);//모든 사용자 위치정보 받기
                         task2.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
                         task3= new GetFriendData(context);//친구 위치정보 받기
@@ -286,6 +301,10 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         str_latitude = String.valueOf(location.getLatitude());
         str_longitude = String.valueOf(location.getLongitude());
 
+        personLocation.setTime(getTime());
+        personLocation.setLatitude(str_latitude);
+        personLocation.setLongitude(str_longitude);
+
         if (str_latitude.equalsIgnoreCase("0.0") && str_longitude.equalsIgnoreCase("0.0")) {
             requestLocationUpdate();
         } else {
@@ -398,5 +417,10 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     @SuppressLint("MissingPermission")
     private void requestLocationUpdate() {
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+    private String getTime(){
+        mNow = System.currentTimeMillis();
+        mDate = new Date(mNow);
+        return mFormat.format(mDate);
     }
 }
