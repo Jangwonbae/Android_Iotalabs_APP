@@ -6,8 +6,6 @@ public class PersonLocation {
     private String latitude;
     private String longitude;
 
-    PersonLocation(){
-    }
     public static PersonLocation getInstance(){
         if(personLocationInstance == null){
             personLocationInstance = new PersonLocation();

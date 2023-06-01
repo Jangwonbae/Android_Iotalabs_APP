@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.iotalabs.geoar.data.ClassUUID;
@@ -23,21 +25,17 @@ import java.util.regex.Pattern;
 
 public class ReadQR_codeActivity extends AppCompatActivity {
     private IntentIntegrator qrScan;
-    private DbOpenHelper mDbOpenHelper;
-    private Cursor mCursor;
-    private static String IP_ADDRESS;
-    private GetFriendData getTask;
-    private InsertFriendData task3;
-    private ClassUUID classUUID;
+    private DatabaseReference mDatabase;
+    private String UUID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_qractivity);
-        IP_ADDRESS= Constants.IP_ADDRESS.toString();
-        classUUID = new ClassUUID();
+        UUID= new ClassUUID().getDeviceUUID(getBaseContext());
         qrScan = new IntentIntegrator(this);
         qrScan.setOrientationLocked(false); // default가 세로모드인데 휴대폰 방향에 따라 가로, 세로로 자동 변경됩니다.
         qrScan.initiateScan();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
     @SuppressLint("Range")
     @Override
@@ -48,7 +46,7 @@ public class ReadQR_codeActivity extends AppCompatActivity {
         String nameFriend;
         if(result != null) {
             if(result.getContents() == null) {
-                finish();
+
                 //취소
             } else {//성공
                 Pattern patten = Pattern.compile(checkUUID);
@@ -57,39 +55,19 @@ public class ReadQR_codeActivity extends AppCompatActivity {
                 if(regex){//UUID형식인지 체크
                     uuidFriend = result.getContents().split("문자열나누기")[0];
                     nameFriend = result.getContents().split("문자열나누기")[1];
-                    mDbOpenHelper = new DbOpenHelper(this);
-                    mDbOpenHelper.open();
-                    mCursor = null;
-                    mCursor = mDbOpenHelper.getAllColumns();
-                    boolean readyFriend = false;
-                    while (mCursor.moveToNext()) {//데이터베이스에 등록된 UUID인지 체크
-                        if(uuidFriend.equals(mCursor.getString(mCursor.getColumnIndex("UUID")))){
-                            readyFriend =true;
-                            break;
-                        }
-                    }
-                    mDbOpenHelper.close();
-                    if(readyFriend){
-                        Toast.makeText(this, "이미 등록된 친구입니다.", Toast.LENGTH_LONG).show();
-                        finish();
-                    }
-                    else{
-                        task3 = new InsertFriendData(ReadQR_codeActivity.this);
-                        task3.execute("http://" + IP_ADDRESS + "/insertFriend.php", classUUID.getDeviceUUID(getApplicationContext()),
-                                uuidFriend,null,null,nameFriend);
-                        getTask= new GetFriendData(getApplicationContext());//친구 위치정보 받기
-                        getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", classUUID.getDeviceUUID(getApplicationContext()));
-                    }
+                    //이미 등록된 친구인지 확인
+                    mDatabase.child("USER").child(UUID).child("follow").child(uuidFriend).setValue(nameFriend);
+
                 }
                 else{
                     Toast.makeText(this, "친구추가 QR코드가 아닙니다." , Toast.LENGTH_LONG).show();
-                    finish();
                 }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-            finish();
+
         }
+        finish();
 
     }
 

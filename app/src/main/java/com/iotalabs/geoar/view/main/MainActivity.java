@@ -23,7 +23,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.iotalabs.geoar.data.ClassUUID;
+import com.iotalabs.geoar.data.PersonLocation;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
+import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity;
 
@@ -39,9 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private Boolean isFabOpen = false;
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
-
+    private final String TAG = "MainAactivityTAG";
     private FirebaseAuth mAuth;
+    private String UUID;
+    private DatabaseReference mDatabase;
 
+    private ClassUUID classUUID;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
+        classUUID=new ClassUUID();
+        UUID=classUUID.getDeviceUUID(getBaseContext());
 
         //auth
         mAuth = FirebaseAuth.getInstance();
@@ -73,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+        //db
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //getToken();
+
         //Fragment 객체생성
         mapFragment = new MapFragment();
         listFragment = new ListFragment();
@@ -189,7 +205,21 @@ public class MainActivity extends AppCompatActivity {
     public void service_stop() {
         stopService(new Intent(this, BackgroundLocationUpdateService.class));
     }
+    public void getToken(){
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        token = task.getResult();
+                        mDatabase.child("USER").child(UUID).child("token").setValue(token);
+                    }
 
+                });
+    }
     /* 뒤로가기 버튼 메소드*/
     public void onBackPressed() {
         //super.onBackPressed();

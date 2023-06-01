@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,14 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.iotalabs.geoar.data.ClassUUID;
@@ -71,6 +80,9 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private HeatmapTileProvider provider;
     private TileOverlay overlay;
 
+    private DatabaseReference mDatabase;
+
+
     public MapFragment() {
         // required
     }
@@ -80,8 +92,9 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         classUUID = new ClassUUID();
-    }
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //데어터 바인딩
@@ -222,6 +235,20 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void createHitMap(){//히트맵만들기
         if(prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
             try {
+                //데이터베이스로 부터 한번 받아오기
+                //서버 값을 반환할 수 없는 경우 클라이언트는 로컬 스토리지 캐시를 프로브하고 값을 여전히 찾을 수 없으면 오류를 반환합니다.
+                mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        } else {
+                            Log.d("firebasessssssssssssssssssssssss", String.valueOf(task.getResult().getValue()));
+
+                        }
+                    }
+                });
+
                 latLngs = new ArrayList<>();
                 mDbOpenHelper = new DbOpenHelper(getActivity());
                 mDbOpenHelper.open();

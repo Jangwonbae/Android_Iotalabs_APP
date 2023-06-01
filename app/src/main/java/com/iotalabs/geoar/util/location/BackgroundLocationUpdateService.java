@@ -117,21 +117,6 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
 
-    public void getToken(){
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-                        String token = task.getResult();
-                        task5= new InsertToken();//
-                        task5.execute( "http://" + IP_ADDRESS + "/insertToken.php", classUUID.getDeviceUUID(getApplicationContext()),token);
-                    }
-                });
-    }
     @Override
     public void onCreate() {
         super.onCreate();
@@ -167,13 +152,12 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                 try {
                     if (!stopService) {
                         //Perform your task here
-                        mDatabase.child(UUID).setValue(personLocation);
+                        mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
                         
                         task2= new GetData(context);//모든 사용자 위치정보 받기
                         task2.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
                         task3= new GetFriendData(context);//친구 위치정보 받기
                         task3.execute( "http://" + IP_ADDRESS + "/getMyFriend.php",UUID);
-                        getToken();
                         boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
                                 Double.parseDouble(str_longitude)),p,true);
                         if(inside){
