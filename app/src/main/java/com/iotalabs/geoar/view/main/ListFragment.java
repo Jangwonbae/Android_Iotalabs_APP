@@ -67,9 +67,6 @@ public class ListFragment extends Fragment {
         //뷰모델 연결
         binding.setViewModel(mainFragmentViewModel);
 
-        classUUID = new ClassUUID();
-        IP_ADDRESS= Constants.IP_ADDRESS;
-
 
         mDbOpenHelper = new DbOpenHelper(getActivity());
 

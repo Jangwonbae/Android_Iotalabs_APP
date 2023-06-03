@@ -31,7 +31,7 @@ public class ReadQR_codeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_qractivity);
-        UUID= new ClassUUID().getDeviceUUID(getBaseContext());
+        UUID= ClassUUID.getDeviceUUID(getBaseContext());
         qrScan = new IntentIntegrator(this);
         qrScan.setOrientationLocked(false); // default가 세로모드인데 휴대폰 방향에 따라 가로, 세로로 자동 변경됩니다.
         qrScan.initiateScan();
@@ -45,10 +45,8 @@ public class ReadQR_codeActivity extends AppCompatActivity {
         String uuidFriend;
         String nameFriend;
         if(result != null) {
-            if(result.getContents() == null) {
-
-                //취소
-            } else {//성공
+            if(result.getContents() != null) {
+                //성공
                 Pattern patten = Pattern.compile(checkUUID);
                 Matcher matcher = patten.matcher(result.getContents());
                 boolean regex= matcher.find();
@@ -65,10 +63,7 @@ public class ReadQR_codeActivity extends AppCompatActivity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-
         }
         finish();
-
     }
-
 }

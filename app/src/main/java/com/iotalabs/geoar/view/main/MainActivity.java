@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,18 +23,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.iotalabs.geoar.data.ClassUUID;
-import com.iotalabs.geoar.data.PersonLocation;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
-import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private MainFragmentViewModel mainFragmentViewModel;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -47,47 +43,19 @@ public class MainActivity extends AppCompatActivity {
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
     private final String TAG = "MainAactivityTAG";
     private FirebaseAuth mAuth;
-    private String UUID;
-    private DatabaseReference mDatabase;
 
-    private ClassUUID classUUID;
-    private String token;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setActivity(this);
+        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        binding.setViewModel(mainFragmentViewModel);
+
+        mainFragmentViewModel.userAuth();//인증
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
-        classUUID=new ClassUUID();
-        UUID=classUUID.getDeviceUUID(getBaseContext());
-
-        //auth
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "signInAnonymously:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("TAG", "signInAnonymously:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-        //db
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        //getToken();
 
         //Fragment 객체생성
         mapFragment = new MapFragment();
@@ -205,21 +173,7 @@ public class MainActivity extends AppCompatActivity {
     public void service_stop() {
         stopService(new Intent(this, BackgroundLocationUpdateService.class));
     }
-    public void getToken(){
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-                        token = task.getResult();
-                        mDatabase.child("USER").child(UUID).child("token").setValue(token);
-                    }
 
-                });
-    }
     /* 뒤로가기 버튼 메소드*/
     public void onBackPressed() {
         //super.onBackPressed();

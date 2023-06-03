@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="activity"
-            type="com.iotalabs.geoar.view.main.MainActivity" />
+            name="viewModel"
+            type="com.iotalabs.geoar.view.main.MainFragmentViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.iotalabs.geoar.data;
 
 public class PersonLocation {
     public static PersonLocation personLocationInstance;
+
     private String time;
     private String latitude;
     private String longitude;

@@ -12,7 +12,7 @@ public class ClassUUID {
     private final static String CACHE_DEVICE_ID = "CacheDeviceID";
 
 
-    public String getDeviceUUID(Context context)//UUID를 리턴하는 메소드
+    public static String getDeviceUUID(Context context)//UUID를 리턴하는 메소드
     {
         java.util.UUID deviceUUID = null;
         //sharedPreferences에 저장된 UUID를 가져옴

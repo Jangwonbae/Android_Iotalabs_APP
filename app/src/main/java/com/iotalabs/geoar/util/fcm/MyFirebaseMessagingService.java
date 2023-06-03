@@ -36,7 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
 
-        UUID =new ClassUUID().getDeviceUUID(getBaseContext());
+        UUID =ClassUUID.getDeviceUUID(getBaseContext());
         mDatabase = FirebaseDatabase.getInstance().getReference();;
         mDatabase.child("USER").child(UUID).child("token").setValue(token);
     }

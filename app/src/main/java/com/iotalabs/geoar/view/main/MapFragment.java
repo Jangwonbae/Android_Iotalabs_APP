@@ -41,20 +41,19 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.iotalabs.geoar.data.ClassUUID;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
+import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.data.User;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -66,8 +65,6 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
     private Cursor friendCursor;
-
-    private ClassUUID classUUID;
     List<LatLng> latLngs;
     private int[] colors = {
             Color.rgb(102, 225, 0), // green
@@ -80,8 +77,6 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private HeatmapTileProvider provider;
     private TileOverlay overlay;
 
-    private DatabaseReference mDatabase;
-
 
     public MapFragment() {
         // required
@@ -91,8 +86,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        classUUID = new ClassUUID();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
 
     }
     @Override
@@ -235,19 +229,8 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void createHitMap(){//히트맵만들기
         if(prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
             try {
-                //데이터베이스로 부터 한번 받아오기
-                //서버 값을 반환할 수 없는 경우 클라이언트는 로컬 스토리지 캐시를 프로브하고 값을 여전히 찾을 수 없으면 오류를 반환합니다.
-                mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e("firebase", "Error getting data", task.getException());
-                        } else {
-                            Log.d("firebasessssssssssssssssssssssss", String.valueOf(task.getResult().getValue()));
 
-                        }
-                    }
-                });
+
 
                 latLngs = new ArrayList<>();
                 mDbOpenHelper = new DbOpenHelper(getActivity());
@@ -256,7 +239,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 mCursor = null;
                 mCursor = mDbOpenHelper.getAllColumns2();
                 while (mCursor.moveToNext()) {
-                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(classUUID.getDeviceUUID(getContext())))) {
+                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(ClassUUID.getDeviceUUID(getContext())))) {
                         latLngs.add(
                                 new LatLng(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_latitude"))),
                                         Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_longitude")))));

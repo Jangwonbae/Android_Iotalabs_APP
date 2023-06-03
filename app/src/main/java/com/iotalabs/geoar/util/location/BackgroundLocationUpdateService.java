@@ -43,13 +43,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonLocation;
@@ -58,10 +55,8 @@ import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.util.network.InsertData;
 import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.data.Constants;
-import com.iotalabs.geoar.data.Location_All;
 import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.view.main.MainActivity;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -108,8 +103,6 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private NotificationCompat.Builder builder;
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
 
-    private ClassUUID classUUID;
-
     private DatabaseReference mDatabase;
     private PersonLocation personLocation;
     private long mNow;
@@ -121,9 +114,8 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     public void onCreate() {
         super.onCreate();
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
-        classUUID=new ClassUUID();
         context = this;
-        UUID= classUUID.getDeviceUUID(context);
+        UUID= ClassUUID.getDeviceUUID(context);
         p = new ArrayList<>();
         p.add(new LatLng(37.2104, 126.9528));
         p.add( new LatLng(37.2107, 126.9534));
@@ -278,10 +270,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     @Override
     public void onLocationChanged(Location location) {
         Log.e(TAG_LOCATION, "Location Changed Latitude : " + location.getLatitude() + "\tLongitude : " + location.getLongitude());
-        ///
-        Location_All all = (Location_All) getApplication();
-        all.setGlobalgValue(location);
-        ///
+
         str_latitude = String.valueOf(location.getLatitude());
         str_longitude = String.valueOf(location.getLongitude());
 
