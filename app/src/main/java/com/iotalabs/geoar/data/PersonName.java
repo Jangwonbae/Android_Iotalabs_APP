@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class PersonName {
-    private static PersonName nameInstance;
+    public static PersonName nameInstance;
     private String name;
     private SharedPreferences prefs;
     private Context context;

@@ -30,8 +30,7 @@ public class CreateQR_codeViewModel extends ViewModel{
     public void set_QR_text(Context contxt){
         personName=PersonName.getInstance(contxt);
         this.name=personName.getName();
-        classUUID = new ClassUUID();
-        this.UUID=classUUID.getDeviceUUID(contxt);
+        this.UUID=ClassUUID.getDeviceUUID(contxt);
         this.QR_text = UUID+"문자열나누기"+name;
     }
 

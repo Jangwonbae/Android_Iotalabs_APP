@@ -5,24 +5,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
+import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private MainFragmentViewModel mainFragmentViewModel;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -33,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private Boolean isFabOpen = false;
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
+    private final String TAG = "MainAactivityTAG";
+    private FirebaseAuth mAuth;
+
 
 
     @Override
@@ -40,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setActivity(this);
+        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        binding.setViewModel(mainFragmentViewModel);
+
+        mainFragmentViewModel.userAuth();//인증
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         //Fragment 객체생성

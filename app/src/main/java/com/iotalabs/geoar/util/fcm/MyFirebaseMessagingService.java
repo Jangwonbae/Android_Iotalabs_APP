@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.example.lotalabsappui.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.iotalabs.geoar.data.ClassUUID;
@@ -26,19 +28,17 @@ import com.iotalabs.geoar.view.main.MainActivity;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private Cursor mCursor;
-    private DbOpenHelper mDbOpenHelper;
-    private static String IP_ADDRESS ;
-    private InsertToken task;
-    private ClassUUID classUUID;
+
+    private String UUID;
+    private DatabaseReference mDatabase;
     @SuppressLint("WrongThread")
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        IP_ADDRESS= Constants.IP_ADDRESS.toString();
-        classUUID=new ClassUUID();
-        task= new InsertToken();//
-        task.execute( "http://" + IP_ADDRESS + "/insertToken.php", classUUID.getDeviceUUID(getApplicationContext()),token);
+
+        UUID =ClassUUID.getDeviceUUID(getBaseContext());
+        mDatabase = FirebaseDatabase.getInstance().getReference();;
+        mDatabase.child("USER").child(UUID).child("token").setValue(token);
     }
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage)

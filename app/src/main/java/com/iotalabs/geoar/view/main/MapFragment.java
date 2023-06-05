@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,15 +39,21 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.iotalabs.geoar.data.ClassUUID;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
+import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.data.User;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -57,8 +65,6 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
     private Cursor friendCursor;
-
-    private ClassUUID classUUID;
     List<LatLng> latLngs;
     private int[] colors = {
             Color.rgb(102, 225, 0), // green
@@ -71,6 +77,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     private HeatmapTileProvider provider;
     private TileOverlay overlay;
 
+
     public MapFragment() {
         // required
     }
@@ -79,9 +86,9 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        classUUID = new ClassUUID();
-    }
 
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //데어터 바인딩
@@ -222,6 +229,9 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void createHitMap(){//히트맵만들기
         if(prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
             try {
+
+
+
                 latLngs = new ArrayList<>();
                 mDbOpenHelper = new DbOpenHelper(getActivity());
                 mDbOpenHelper.open();
@@ -229,7 +239,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 mCursor = null;
                 mCursor = mDbOpenHelper.getAllColumns2();
                 while (mCursor.moveToNext()) {
-                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(classUUID.getDeviceUUID(getContext())))) {
+                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(ClassUUID.getDeviceUUID(getContext())))) {
                         latLngs.add(
                                 new LatLng(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_latitude"))),
                                         Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_longitude")))));
