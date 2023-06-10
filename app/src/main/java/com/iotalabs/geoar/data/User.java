@@ -13,7 +13,6 @@ public class User {
 
     public User(){
         follows = new HashMap<>();
-        Log.d("ssssssss","나 호출됨");
     }
     public String getUserUUID() {
         return UserUUID;

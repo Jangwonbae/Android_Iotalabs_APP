@@ -15,6 +15,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonName;
+import com.iotalabs.geoar.data.StaticUUID;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.Hashtable;
@@ -22,15 +23,14 @@ import java.util.UUID;
 
 public class CreateQR_codeViewModel extends ViewModel{
     private PersonName personName;
-    private ClassUUID classUUID;
     private String name;
     private String UUID;
     private String QR_text;
 
-    public void set_QR_text(Context contxt){
-        personName=PersonName.getInstance(contxt);
+    public void set_QR_text(Context context){
+        personName=PersonName.getInstance(context);
         this.name=personName.getName();
-        this.UUID=ClassUUID.getDeviceUUID(contxt);
+        this.UUID= StaticUUID.UUID;
         this.QR_text = UUID+"문자열나누기"+name;
     }
 

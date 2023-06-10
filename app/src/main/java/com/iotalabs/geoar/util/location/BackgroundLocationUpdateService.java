@@ -49,7 +49,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.ClassUUID;
+import com.iotalabs.geoar.data.Clock;
 import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.util.network.GetData;
 import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.util.network.InsertData;
@@ -105,9 +107,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
 
     private DatabaseReference mDatabase;
     private PersonLocation personLocation;
-    private long mNow;
-    private Date mDate;
-    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
 
 
     @Override
@@ -115,7 +115,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         super.onCreate();
         IP_ADDRESS= Constants.IP_ADDRESS.toString();
         context = this;
-        UUID= ClassUUID.getDeviceUUID(context);
+        UUID= StaticUUID.UUID;
         p = new ArrayList<>();
         p.add(new LatLng(37.2104, 126.9528));
         p.add( new LatLng(37.2107, 126.9534));
@@ -274,7 +274,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         str_latitude = String.valueOf(location.getLatitude());
         str_longitude = String.valueOf(location.getLongitude());
 
-        personLocation.setTime(getTime());
+        personLocation.setTime(new Clock().getTime());
         personLocation.setLatitude(str_latitude);
         personLocation.setLongitude(str_longitude);
 
@@ -391,9 +391,5 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private void requestLocationUpdate() {
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
     }
-    private String getTime(){
-        mNow = System.currentTimeMillis();
-        mDate = new Date(mNow);
-        return mFormat.format(mDate);
-    }
+
 }

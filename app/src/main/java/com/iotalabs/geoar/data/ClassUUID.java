@@ -11,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 public class ClassUUID {
     private final static String CACHE_DEVICE_ID = "CacheDeviceID";
 
+    public ClassUUID(Context context){
+        StaticUUID.UUID=getDeviceUUID(context);
+    }
+
 
     public static String getDeviceUUID(Context context)//UUID를 리턴하는 메소드
     {

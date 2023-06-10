@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.iotalabs.geoar.data.ClassUUID;
+import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
@@ -36,7 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
 
-        UUID =ClassUUID.getDeviceUUID(getBaseContext());
+        UUID = StaticUUID.UUID;
         mDatabase = FirebaseDatabase.getInstance().getReference();;
         mDatabase.child("USER").child(UUID).child("token").setValue(token);
     }

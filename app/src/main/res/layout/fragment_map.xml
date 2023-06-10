@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.iotalabs.geoar.view.main.MainFragmentViewModel" />
+            type="com.iotalabs.geoar.view.main.DataBaseViewModel" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"

@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonName;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
@@ -45,6 +46,7 @@ public class IntroActivity extends AppCompatActivity {
     public static final long DEFAULT_LOCATION_REQUEST_INTERVAL = 2000L;//최대2초
     public static final long DEFAULT_LOCATION_REQUEST_FAST_INTERVAL = 2000L;//최대2초
     private LocationRequest locationRequest;
+    private ClassUUID classUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class IntroActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
         binding.setActivity(this);
 
+        classUUID=new ClassUUID(getBaseContext());//UUID를 static으로 저장
     }
 
     @Override

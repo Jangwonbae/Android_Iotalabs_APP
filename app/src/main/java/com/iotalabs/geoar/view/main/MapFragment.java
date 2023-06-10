@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
@@ -48,8 +49,10 @@ import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.data.User;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
+import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;
@@ -57,15 +60,15 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MapFragment extends Fragment  implements OnMapReadyCallback  {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FragmentMapBinding binding;
-    private MainFragmentViewModel mainFragmentViewModel;
+    private DataBaseViewModel dataBaseViewModel;
     private GoogleMap mMap;
     private MapView mapView = null;
     private DbOpenHelper mDbOpenHelper;
     private Cursor mCursor;
     private Cursor friendCursor;
-    List<LatLng> latLngs;
+    private List<LatLng> users;
     private int[] colors = {
             Color.rgb(102, 225, 0), // green
             Color.rgb(255, 0, 0)    // red
@@ -89,22 +92,38 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
 
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //데어터 바인딩
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_map,container,false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
         //뷰모델 생성
-        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
-        binding.setViewModel(mainFragmentViewModel);
+        binding.setViewModel(dataBaseViewModel);
 
+        users=new ArrayList<LatLng>();
+        dataBaseViewModel.getAllUserData();
+        //liveData의 값을 관찰하다가 값이 바뀌면 실행
+        dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {
+            @Override
+            public void onChanged(List<LatLng> latLngs) {
+                //DB로 부터 받은 데이터가 바뀌면 실행
+                users = latLngs;
+                mMap.clear();
+                createHitMap();
+                //reNewMap();
+            }
+
+        });
 
         binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
             @Override
             public void onClick(View v) {
                 //맵갱신
                 reNewMap();
-        }});
+            }
+        });
 
         binding.ftBtnGoAR.setOnClickListener(new View.OnClickListener() {  //AR버튼 이벤트
             @Override
@@ -112,7 +131,8 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 //AR화면으로 이동
                 Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
                 startActivity(intent);
-            }});
+            }
+        });
 
 
         mapView = binding.map;
@@ -170,7 +190,7 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(34.928825,127.498833), 14));//순천국가정원 이동
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(34.928825, 127.498833), 14));//순천국가정원 이동
 
         createMyLocation();//내위치만들기
         createFriendMarker();//친구마커 만들기
@@ -178,20 +198,21 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
         createPloy();
     }
 
-    public void createMyLocation(){//내위치만들기
+    public void createMyLocation() {//내위치만들기
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(getActivity(), "위치권한을 허용해주세요.", Toast.LENGTH_LONG).show();
             mMap.setMyLocationEnabled(false);
         } else {
-            if(prefs.getBoolean("key_me", true)){//세팅에서 온상태면(내위치)
+            if (prefs.getBoolean("key_me", true)) {//세팅에서 온상태면(내위치)
                 mMap.setMyLocationEnabled(true);//내위치 만듬
             }
         }
     }
+
     @SuppressLint("Range")
-    public void createFriendMarker(){//친구마커 만들기
-        if(prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
+    public void createFriendMarker() {//친구마커 만들기
+        if (prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
             try {
                 mDbOpenHelper = new DbOpenHelper(getActivity());
                 mDbOpenHelper.open();
@@ -201,8 +222,8 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                 //마커 크기 및 아이콘 생성
                 int height = 110;
                 int width = 110;
-                BitmapDrawable bitmapdraw1=(BitmapDrawable)getResources().getDrawable(R.drawable.mapmarker);
-                Bitmap b=bitmapdraw1.getBitmap();
+                BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.mapmarker);
+                Bitmap b = bitmapdraw1.getBitmap();
                 Bitmap friend_lMarker = Bitmap.createScaledBitmap(b, width, height, false);
                 ////
 
@@ -210,8 +231,8 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                     MarkerOptions makerOptions = new MarkerOptions();
                     makerOptions
                             .position(new LatLng(
-                                    Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_latitude"))),
-                                    Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_longitude")))
+                                            Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_latitude"))),
+                                            Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_longitude")))
                                     )
                             )
                             .title(friendCursor.getString(friendCursor.getColumnIndex("name")))// 타이틀.
@@ -225,38 +246,22 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
             }
         }
     }
+
     @SuppressLint("Range")
-    public void createHitMap(){//히트맵만들기
-        if(prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
-            try {
-
-
-
-                latLngs = new ArrayList<>();
-                mDbOpenHelper = new DbOpenHelper(getActivity());
-                mDbOpenHelper.open();
-                latLngs.clear();
-                mCursor = null;
-                mCursor = mDbOpenHelper.getAllColumns2();
-                while (mCursor.moveToNext()) {
-                    if (!(mCursor.getString(mCursor.getColumnIndex("UUID")).equals(ClassUUID.getDeviceUUID(getContext())))) {
-                        latLngs.add(
-                                new LatLng(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_latitude"))),
-                                        Double.parseDouble(mCursor.getString(mCursor.getColumnIndex("str_longitude")))));
-                    }
-                }
-                mCursor.close();
-                mDbOpenHelper.close();
-
+    public void createHitMap() {//히트맵만들기
+        try{
+            if (prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
                 gradient = new Gradient(colors, startPoints);
-                provider = new HeatmapTileProvider.Builder().data(latLngs).gradient(gradient).build();
+                provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
                 overlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
-            } catch (Exception e) {
-
             }
+        }catch (Exception e){
+            Log.d("createHitMap",e.toString());
         }
+
     }
-    public void createPloy(){
+
+    public void createPloy() {
         Polygon polygon = mMap.addPolygon(new PolygonOptions()
                 .clickable(true)
                 .strokeColor(Color.RED)
@@ -273,9 +278,10 @@ public class MapFragment extends Fragment  implements OnMapReadyCallback  {
                         new LatLng(37.2132, 126.9503),
                         new LatLng(37.2122, 126.9495),
                         new LatLng(37.2111, 126.9504)
-                     ));
+                ));
     }
-    public void reNewMap(){
+
+    public void reNewMap() {
         mMap.clear();
         createMyLocation();
         createFriendMarker();

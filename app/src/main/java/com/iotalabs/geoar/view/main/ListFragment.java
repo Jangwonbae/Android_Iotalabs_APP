@@ -27,6 +27,7 @@ import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.FragmentListBinding;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.Constants;
+import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
 import com.iotalabs.geoar.util.network.GetFriendData;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class ListFragment extends Fragment {
 
     private FragmentListBinding binding;
-    private MainFragmentViewModel mainFragmentViewModel;
+    private DataBaseViewModel dataBaseViewModel;
     private ListView friendListView;
     private MyAdapter myAdapter;
     public static ArrayList<FriendData> fData = new ArrayList<>();
@@ -63,9 +64,9 @@ public class ListFragment extends Fragment {
         //Fragment 바인딩
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container,false);
         //뷰모델 생성
-        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+        dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
-        binding.setViewModel(mainFragmentViewModel);
+        binding.setViewModel(dataBaseViewModel);
 
 
         mDbOpenHelper = new DbOpenHelper(getActivity());
@@ -108,9 +109,9 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 task = new DeleteFriendData(getActivity());
-                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php", classUUID.getDeviceUUID(getContext()),fData.get(position).UUID,String.valueOf(fData.get(position)._id));
+                task.execute("http://" + IP_ADDRESS + "/deleteFriend.php", StaticUUID.UUID,fData.get(position).UUID,String.valueOf(fData.get(position)._id));
                 getTask= new GetFriendData(getContext());//친구 위치정보 받기
-                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", classUUID.getDeviceUUID(getContext()));
+                getTask.execute( "http://" + IP_ADDRESS + "/getMyFriend.php", StaticUUID.UUID);
                 //Toast.makeText(getActivity().getApplication(), "정보삭제!", Toast.LENGTH_LONG).show();
                 return true;
             }
