@@ -110,9 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void onChanged(List<LatLng> latLngs) {
                 //DB로 부터 받은 데이터가 바뀌면 실행
                 users = latLngs;
-                mMap.clear();
-                createHitMap();
-                //reNewMap();
+                reNewMap();
             }
 
         });
@@ -134,13 +132,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
         mapView = binding.map;
         mapView.getMapAsync(this);
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
         }
-
         return binding.getRoot();
     }
 
