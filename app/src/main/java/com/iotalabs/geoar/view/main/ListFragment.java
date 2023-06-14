@@ -97,15 +97,21 @@ public class ListFragment extends Fragment {
                 return true;
             }
         });
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         //구독하는 친구들 리스트가 바뀌면 실행
-        dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {
+        dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {//점유권을 가져와야됨
             @Override
             public void onChanged(ArrayList<FriendData> friendDatalist) {
                 createList(friendDatalist);
-
             }
         });
-        return binding.getRoot();
+        dataBaseViewModel.getAllUserData();
     }
 
     public int dpToPx(int dp) {
@@ -142,6 +148,7 @@ public class ListFragment extends Fragment {
             binding.textViewNoFriend.setVisibility(View.VISIBLE);
         }
         else {
+            Log.d("ddddddddddddd",friends.size()+"");
             binding.textViewNoFriend.setVisibility(View.INVISIBLE);
         }
         myAdapter.notifyDataSetChanged();
