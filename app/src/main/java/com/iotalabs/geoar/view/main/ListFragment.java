@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +65,7 @@ public class ListFragment extends Fragment {
         //데이터받기
         dataBaseViewModel.getAllUserData();
         //친구 목록을 담을 리스트
-        friends = new ArrayList<FriendData>();
+        friends = dataBaseViewModel.getMyFriendList().getValue();
 
         //swipeMenuListView 생성
         swipeMenuListView = binding.swipeMenuListFriend;
@@ -72,6 +73,8 @@ public class ListFragment extends Fragment {
 
         myAdapter=new MyAdapter(getContext(),friends);
         swipeMenuListView.setAdapter(myAdapter);
+
+        createList(friends);
         //swipeMenuListView 리스트 열었다 닫았다 메소드
         swipeMenuListView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
             @Override
@@ -90,24 +93,20 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 //삭제할때 메소드
+                dataBaseViewModel.removeFriend(friends.get(position).UUID);
                 return true;
             }
         });
-
         //구독하는 친구들 리스트가 바뀌면 실행
         dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {
             @Override
             public void onChanged(ArrayList<FriendData> friendDatalist) {
-                friends.clear();//비우고 다시 채우기
-                for(FriendData fData: friendDatalist){
-                    friends.add(fData);
-                }//why? notifyDataSetChanged() 얘는 friends= friendDatalist 이런식으로 하면 갱신이 안되더라
-                createList();
+                createList(friendDatalist);
+
             }
         });
         return binding.getRoot();
     }
-
 
     public int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density; return Math.round((float) dp * density);
@@ -119,7 +118,6 @@ public class ListFragment extends Fragment {
             // create "첫번째" item
             SwipeMenuItem openItem = new SwipeMenuItem(
                     getActivity());
-
             // create "delete" item
             SwipeMenuItem deleteItem = new SwipeMenuItem(
                     getActivity());
@@ -134,7 +132,12 @@ public class ListFragment extends Fragment {
             menu.addMenuItem(deleteItem);
         }
     };
-    public void createList(){
+    public void createList(ArrayList<FriendData> friendDatalist){
+        friends.clear();//비우고 다시 채우기
+        for(FriendData fData: friendDatalist){
+            friends.add(fData);
+        }//why? notifyDataSetChanged() 얘는 friends= friendDatalist 이런식으로 하면 갱신이 안되더라
+
         if(friends.isEmpty()){
             binding.textViewNoFriend.setVisibility(View.VISIBLE);
         }

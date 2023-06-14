@@ -44,12 +44,6 @@
 
 
         <activity
-            android:name="com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-
-
-        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />

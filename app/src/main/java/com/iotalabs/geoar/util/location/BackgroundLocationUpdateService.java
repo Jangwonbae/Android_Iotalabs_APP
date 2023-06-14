@@ -145,11 +145,10 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                     if (!stopService) {
                         //Perform your task here
                         mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
-                        
-                        task2= new GetData(context);//모든 사용자 위치정보 받기
-                        task2.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
-                        task3= new GetFriendData(context);//친구 위치정보 받기
-                        task3.execute( "http://" + IP_ADDRESS + "/getMyFriend.php",UUID);
+
+                       // task3= new GetFriendData(context);//친구 위치정보 받기
+                        //task3.execute( "http://" + IP_ADDRESS + "/getMyFriend.php",UUID);
+
                         boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
                                 Double.parseDouble(str_longitude)),p,true);
                         if(inside){

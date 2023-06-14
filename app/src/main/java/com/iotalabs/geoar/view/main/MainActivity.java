@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,21 +19,22 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+import com.iotalabs.geoar.util.auth.Authenticator;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
-import com.iotalabs.geoar.view.read_qr_code.ReadQR_codeActivity;
+import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
-    private MainFragmentViewModel mainFragmentViewModel;
+    private DataBaseViewModel dataBaseViewModel;
 
+    private IntentIntegrator qrScan;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private MapFragment mapFragment;
@@ -51,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
-        binding.setViewModel(mainFragmentViewModel);
+        dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
+        binding.setViewModel(dataBaseViewModel);
 
-        mainFragmentViewModel.userAuth();//인증
+        new Authenticator().authFireBase();//인증
+
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         //Fragment 객체생성
@@ -89,14 +93,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setFrag(0); // 첫 프래그먼트 화면 지정
+
         //플로팅 버튼 클릭메소드
-        binding.ftBtnMain.setOnClickListener(new View.OnClickListener() {
+        binding.ftBtnMain.setOnClickListener(new View.OnClickListener() {//열렸다 닫혔다 이벤트
             @Override
             public void onClick(View v) {
                 anim();
             }
         });
-        binding.ftBtnCreateQR.setOnClickListener(new View.OnClickListener() {
+        binding.ftBtnCreateQR.setOnClickListener(new View.OnClickListener() {//QR생성 클릭시 QR코드 엑티비티로 이동
             @Override
             public void onClick(View v) {
                 anim();
@@ -104,14 +109,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        binding.ftBtnReadQR.setOnClickListener(new View.OnClickListener() {
+        binding.ftBtnReadQR.setOnClickListener(new View.OnClickListener() {//QR리더기 클릭시 카메라 엑티비티로 이동
             @Override
             public void onClick(View v) {
                 anim();
-                Intent intent2 = new Intent(MainActivity.this, ReadQR_codeActivity.class);
-                startActivity(intent2);
+                qrScan = new IntentIntegrator(MainActivity.this);
+                qrScan.setOrientationLocked(false); // default가 세로모드인데 휴대폰 방향에 따라 가로, 세로로 자동 변경됩니다.
+                qrScan.initiateScan();
+
             }
         });
+
     }
 
 
@@ -141,20 +149,20 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.setReorderingAllowed(true);
 
         switch (n) {
-            case 0:
+            case 0://map
                 //replace 위에 쌓여진 Fragement들을 버려버리고 새로운 Fragment를 쌓음
                 fragmentTransaction.replace(R.id.fragment_container_view_main, mapFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
 
-            case 1:
+            case 1://list
                 fragmentTransaction.replace(R.id.fragment_container_view_main, listFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
 
-            case 2:
+            case 2://setting
                 fragmentTransaction.replace(R.id.fragment_container_view_main, settingFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -172,6 +180,13 @@ public class MainActivity extends AppCompatActivity {
     //백그라운드 서비스 종료
     public void service_stop() {
         stopService(new Intent(this, BackgroundLocationUpdateService.class));
+    }
+    @SuppressLint("Range")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {//QR스캐너에서 돌아왔을 때
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        dataBaseViewModel.addFriend(result.getContents());
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /* 뒤로가기 버튼 메소드*/
