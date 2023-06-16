@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -62,8 +64,8 @@ public class ListFragment extends Fragment {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
         binding.setViewModel(dataBaseViewModel);
-        //데이터받기
-        dataBaseViewModel.getAllUserData();
+        binding.textViewNoFriend.setVisibility(View.INVISIBLE);
+
         //친구 목록을 담을 리스트
         friends = dataBaseViewModel.getMyFriendList().getValue();
 
@@ -74,7 +76,13 @@ public class ListFragment extends Fragment {
         myAdapter=new MyAdapter(getContext(),friends);
         swipeMenuListView.setAdapter(myAdapter);
 
-        createList(friends);
+        if(friends.isEmpty()){
+            binding.textViewNoFriend.setVisibility(View.VISIBLE);
+        }
+        else {
+            binding.textViewNoFriend.setVisibility(View.INVISIBLE);
+        }
+
         //swipeMenuListView 리스트 열었다 닫았다 메소드
         swipeMenuListView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
             @Override
@@ -148,7 +156,6 @@ public class ListFragment extends Fragment {
             binding.textViewNoFriend.setVisibility(View.VISIBLE);
         }
         else {
-            Log.d("ddddddddddddd",friends.size()+"");
             binding.textViewNoFriend.setVisibility(View.INVISIBLE);
         }
         myAdapter.notifyDataSetChanged();

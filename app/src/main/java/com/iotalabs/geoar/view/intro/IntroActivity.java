@@ -35,6 +35,7 @@ import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonName;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
+import com.iotalabs.geoar.view.main.DataBaseViewModel;
 import com.iotalabs.geoar.view.main.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class IntroActivity extends AppCompatActivity {
         binding.setActivity(this);
 
         classUUID=new ClassUUID(getBaseContext());//UUID를 static으로 저장
+        new DataBaseViewModel().getAllUserData();//데이터받기
     }
 
     @Override
