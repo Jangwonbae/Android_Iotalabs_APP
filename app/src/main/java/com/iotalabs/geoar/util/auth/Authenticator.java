@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Authenticator {
     private FirebaseAuth mAuth;
     public void authFireBase(){
@@ -18,8 +20,7 @@ public class Authenticator {
                         Log.d("TAG", "signInAnonymously:success");
                     }
                 })
-                .addOnFailureListener(task -> Log.d("auth error",task.getMessage()));
-
+                .addOnFailureListener(task -> Log.d("TAG", "signInAnonymously:success"));
 
     }
 }

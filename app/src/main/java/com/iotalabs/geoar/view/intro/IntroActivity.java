@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityIntroBinding;
@@ -33,6 +34,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonName;
+import com.iotalabs.geoar.util.auth.Authenticator;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
 import com.iotalabs.geoar.view.main.DataBaseViewModel;
@@ -47,7 +49,6 @@ public class IntroActivity extends AppCompatActivity {
     public static final long DEFAULT_LOCATION_REQUEST_INTERVAL = 2000L;//최대2초
     public static final long DEFAULT_LOCATION_REQUEST_FAST_INTERVAL = 2000L;//최대2초
     private LocationRequest locationRequest;
-    private ClassUUID classUUID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,9 @@ public class IntroActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
         binding.setActivity(this);
 
-        classUUID=new ClassUUID(getBaseContext());//UUID를 static으로 저장
+        new ClassUUID(getBaseContext());//UUID를 static으로 저장
         new DataBaseViewModel().getAllUserData();//데이터받기
+        new Authenticator().authFireBase();//인증
     }
 
     @Override
@@ -128,6 +130,7 @@ public class IntroActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+
                         PersonName personName = PersonName.getInstance(getBaseContext());
                         String name = personName.getName();
 

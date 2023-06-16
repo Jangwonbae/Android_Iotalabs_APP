@@ -151,7 +151,6 @@ public class ListFragment extends Fragment {
         for(FriendData fData: friendDatalist){
             friends.add(fData);
         }//why? notifyDataSetChanged() 얘는 friends= friendDatalist 이런식으로 하면 갱신이 안되더라
-
         if(friends.isEmpty()){
             binding.textViewNoFriend.setVisibility(View.VISIBLE);
         }

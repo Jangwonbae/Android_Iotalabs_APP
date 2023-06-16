@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         binding.setViewModel(dataBaseViewModel);
 
-        new Authenticator().authFireBase();//인증
-
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         //Fragment 객체생성
