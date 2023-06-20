@@ -1,51 +1,28 @@
 package com.iotalabs.geoar.view.main;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
+
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.FragmentListBinding;
-import com.google.android.gms.maps.model.LatLng;
-import com.iotalabs.geoar.data.ClassUUID;
-import com.iotalabs.geoar.data.Constants;
-import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
-import com.iotalabs.geoar.util.network.GetFriendData;
 import com.iotalabs.geoar.view.main.adapter.friend_list.MyAdapter;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListFragment extends Fragment {
 

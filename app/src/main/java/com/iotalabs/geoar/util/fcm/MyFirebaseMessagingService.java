@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,13 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.util.network.InsertToken;
-import com.iotalabs.geoar.data.Constants;
-import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.main.MainActivity;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 

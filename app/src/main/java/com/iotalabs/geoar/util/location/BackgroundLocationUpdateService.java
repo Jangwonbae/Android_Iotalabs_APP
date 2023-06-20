@@ -48,21 +48,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.PolyUtil;
-import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.Clock;
 import com.iotalabs.geoar.data.PersonLocation;
 import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.util.network.GetData;
-import com.iotalabs.geoar.util.network.GetFriendData;
-import com.iotalabs.geoar.util.network.InsertData;
 import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.view.main.MainActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -96,11 +90,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     /* For Google Fused API */
 
     private static String IP_ADDRESS;
-    private InsertData task;
-    private GetData task2;
-    private GetFriendData task3;
     private PushNoti task4;
-    private InsertToken task5;
     private List<LatLng> p;
     private NotificationCompat.Builder builder;
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
@@ -108,12 +98,10 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private DatabaseReference mDatabase;
     private PersonLocation personLocation;
 
-
-
     @Override
     public void onCreate() {
         super.onCreate();
-        IP_ADDRESS= Constants.IP_ADDRESS.toString();
+        IP_ADDRESS= Constants.IP_ADDRESS;
         context = this;
         UUID= StaticUUID.UUID;
         p = new ArrayList<>();
@@ -145,10 +133,6 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                     if (!stopService) {
                         //Perform your task here
                         mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
-
-                       // task3= new GetFriendData(context);//친구 위치정보 받기
-                        //task3.execute( "http://" + IP_ADDRESS + "/getMyFriend.php",UUID);
-
                         boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
                                 Double.parseDouble(str_longitude)),p,true);
                         if(inside){

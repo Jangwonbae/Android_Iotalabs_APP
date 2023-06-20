@@ -107,7 +107,6 @@ public class DataBaseViewModel extends ViewModel {
     }
 
     public void addFriend(String result) {
-
         String uuidFriend;
         String nameFriend;
         if (result != null) {

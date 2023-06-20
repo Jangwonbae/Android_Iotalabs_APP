@@ -42,7 +42,7 @@ public class MyAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.friendlist,viewGroup,false);
         }
 
-        TextView text1 = (TextView)view.findViewById(R.id.nameText);
+        TextView text1 = view.findViewById(R.id.nameText);
         text1.setText(data.get(i).getName());
 
         return view;
