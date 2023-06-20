@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 public class Constants {
     public static final String IP_ADDRESS = "221.147.144.65:8080";
+
     public static final ArrayList<LatLng> area = new ArrayList<>(Arrays.asList(
             new LatLng(37.2104, 126.9528),
             new LatLng(37.2107, 126.9534),

@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
 import com.iotalabs.geoar.view.main.map.MapItem;
 import com.unity3d.player.UnityPlayerActivity;
@@ -56,16 +57,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView = null;
     private List<LatLng> users;
     private List<FriendData> mapFriends;
-
-    SharedPreferences prefs;
-
-
-
-
+    private SharedPreferences prefs;
     private MapItem mapItem;
-    public MapFragment() {
-        // required
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -221,7 +214,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void createHitMap() {//히트맵만들기
         try{
             if (prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
-                mapItem.createHitMap(mMap, users);
+                mapItem.createHitMap(mMap, users);//히트맵 생성
             }
         }catch (Exception e){
             Log.d("createHitMap",e.toString());
@@ -229,23 +222,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void createPloy() {
-        Polygon polygon = mMap.addPolygon(new PolygonOptions()
-                .clickable(true)
+        PolygonOptions polygonOptions = new PolygonOptions();
+        polygonOptions.clickable(true)
                 .strokeColor(Color.RED)
-                .strokeWidth(5)
-                .add(
-                        new LatLng(37.2104, 126.9528),
-                        new LatLng(37.2107, 126.9534),
-                        new LatLng(37.2116, 126.9534),
-                        new LatLng(37.2126, 126.9542),
-                        new LatLng(37.2140, 126.9543),
-                        new LatLng(37.2151, 126.9526),
-                        new LatLng(37.2149, 126.9517),
-                        new LatLng(37.2143, 126.9517),
-                        new LatLng(37.2132, 126.9503),
-                        new LatLng(37.2122, 126.9495),
-                        new LatLng(37.2111, 126.9504)
-                ));
+                .strokeWidth(5);
+        for(LatLng latLng : Constants.area){
+            polygonOptions.add(latLng);
+        }
+        mMap.addPolygon(polygonOptions);
     }
 
     public void reNewMap() {

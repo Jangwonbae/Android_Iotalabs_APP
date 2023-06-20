@@ -21,11 +21,11 @@ public class MapItem {
 
     private final int markerHeight = 110;
     private final int markerWidth = 110;
-    private int[] colors = {
+    private final int[] colors = {
             Color.rgb(102, 225, 0), // green
             Color.rgb(255, 0, 0)    // red
     };
-    private float[] startPoints = {0.2f, 1f};
+    private final float[] startPoints = {0.2f, 1f};
     private Gradient gradient;
     private HeatmapTileProvider provider;
 
@@ -40,7 +40,7 @@ public class MapItem {
         //마커 크기 및 아이콘 생성
         BitmapDrawable bitmapdraw = (BitmapDrawable) ContextCompat.getDrawable(context, R.drawable.map_marker);
         Bitmap bitmap = bitmapdraw.getBitmap();
-        Bitmap friend_Marker = Bitmap.createScaledBitmap(bitmap, markerWidth, markerHeight, false);
-        return friend_Marker;
+        Bitmap friend_marker = Bitmap.createScaledBitmap(bitmap, markerWidth, markerHeight, false);
+        return friend_marker;
     }
 }

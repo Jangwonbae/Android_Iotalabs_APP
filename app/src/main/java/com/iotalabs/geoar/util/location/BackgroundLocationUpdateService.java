@@ -91,7 +91,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
 
     private static String IP_ADDRESS;
     private PushNoti task4;
-    private List<LatLng> p;
+    private List<LatLng> area;
     private NotificationCompat.Builder builder;
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
 
@@ -104,18 +104,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         IP_ADDRESS= Constants.IP_ADDRESS;
         context = this;
         UUID= StaticUUID.UUID;
-        p = new ArrayList<>();
-        p.add(new LatLng(37.2104, 126.9528));
-        p.add( new LatLng(37.2107, 126.9534));
-        p.add( new LatLng(37.2116, 126.9534));
-        p.add( new LatLng(37.2126, 126.9542));
-        p.add( new LatLng(37.2140, 126.9543));
-        p.add( new LatLng(37.2151, 126.9526));
-        p.add( new LatLng(37.2149, 126.9517));
-        p.add( new LatLng(37.2143, 126.9517));
-        p.add( new LatLng(37.2132, 126.9503));
-        p.add( new LatLng(37.2122, 126.9495));
-        p.add( new LatLng(37.2111, 126.9504));
+        area = Constants.area;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
@@ -134,7 +123,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                         //Perform your task here
                         mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
                         boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
-                                Double.parseDouble(str_longitude)),p,true);
+                                Double.parseDouble(str_longitude)),area,true);
                         if(inside){
                             geo_check = true;
                         }else{
