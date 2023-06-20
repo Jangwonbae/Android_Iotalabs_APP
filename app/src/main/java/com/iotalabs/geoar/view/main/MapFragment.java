@@ -56,15 +56,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView = null;
     private List<LatLng> users;
     private List<FriendData> mapFriends;
-    private int[] colors = {
-            Color.rgb(102, 225, 0), // green
-            Color.rgb(255, 0, 0)    // red
-    };
+
     SharedPreferences prefs;
 
-    private float[] startPoints = {0.2f, 1f};
-    private Gradient gradient;
-    private HeatmapTileProvider provider;
+
+
 
     private MapItem mapItem;
     public MapFragment() {
@@ -206,7 +202,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void createFriendMarker() {//친구마커 만들기
         if (prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
             try {
-
                 for(FriendData fData : mapFriends){
                     MarkerOptions makerOptions = new MarkerOptions();
                     makerOptions
@@ -226,14 +221,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void createHitMap() {//히트맵만들기
         try{
             if (prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
-                gradient = new Gradient(colors, startPoints);//그라데이션
-                provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
-                mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
+                mapItem.createHitMap(mMap, users);
             }
         }catch (Exception e){
             Log.d("createHitMap",e.toString());
         }
-
     }
 
     public void createPloy() {
