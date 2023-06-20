@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class MyAdapter extends BaseAdapter {
     private Context ctx;
-    private ArrayList<FriendData> data;//원본
+    private ArrayList<FriendData> data;
 
     public MyAdapter(Context ctx,ArrayList<FriendData> data){
         this.ctx=ctx;
@@ -43,7 +43,7 @@ public class MyAdapter extends BaseAdapter {
         }
 
         TextView text1 = (TextView)view.findViewById(R.id.nameText);
-        text1.setText(data.get(i).name);
+        text1.setText(data.get(i).getName());
 
         return view;
     }

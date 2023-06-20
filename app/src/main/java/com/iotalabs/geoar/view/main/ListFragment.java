@@ -101,7 +101,7 @@ public class ListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 //삭제할때 메소드
-                dataBaseViewModel.removeFriend(friends.get(position).UUID);
+                dataBaseViewModel.removeFriend(friends.get(position).getUUID());
                 return true;
             }
         });

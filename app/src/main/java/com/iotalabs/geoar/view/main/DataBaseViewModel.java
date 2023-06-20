@@ -57,9 +57,9 @@ public class DataBaseViewModel extends ViewModel {
         mDatabase.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (!task.isSuccessful()) {
+                if (!task.isSuccessful()) {//받아오기 실패
                     Log.e("firebase", "Error getting data", task.getException());
-                } else {
+                } else {//받아오기 성공
                     allUserList = new ArrayList<User>();
                     //USER노드 밑에 있는 자식들을 하나씩 가져옴
                     for (DataSnapshot userSnapshot : task.getResult().child("USER").getChildren()) {
@@ -77,18 +77,25 @@ public class DataBaseViewModel extends ViewModel {
                         user.setFollows(map);
                         allUserList.add(user);
                     }
-                    //사람위치,친구정보 정리
+                    //전체 사람위치,친구정보 정리
                     List<LatLng> tempLatLng = new ArrayList<LatLng>();
                     ArrayList<FriendData> tempFriendList = new ArrayList<FriendData>();
                     for (User user : allUserList) {
-                        if (!user.getUserUUID().equals(UUID)) {//내 UUID가 아니면 위치 받아옴
+                        if (!user.getUserUUID().equals(UUID)) {//내 UUID가 아니면 위치 받아옴 (나를 제외한 모든 사람의 위치)
 
                             //String curTime = new Clock().getTime();//시간값 계산해서 1일이상인 데이터는 표시x
                             tempLatLng.add(new LatLng(Double.parseDouble(user.getPersonLocation().getLatitude()),//위도
                                     Double.parseDouble(user.getPersonLocation().getLongitude())));//경도
-                        } else {//내 UUID면 친구정보를 봄
+                        } else {//내 UUID면 친구정보를 봄 (내 친구의 정보)
                             for (Map.Entry<String, String> follow : user.getFollows().entrySet()) {
-                                tempFriendList.add(new FriendData(follow.getKey(), follow.getValue()));
+                                tempFriendList.add(new FriendData(follow.getKey(), follow.getValue()));//UUID와 설정된 이름을 저장
+                            }
+                        }
+                    }
+                    for (User user : allUserList){//친구 위치정보를 저장
+                        for (FriendData friend : tempFriendList){
+                            if(user.getUserUUID().equals(friend.getUUID())){
+                                friend.setLatLog(Double.parseDouble(user.getPersonLocation().getLatitude()),Double.parseDouble(user.getPersonLocation().getLongitude()));
                             }
                         }
                     }
@@ -119,7 +126,7 @@ public class DataBaseViewModel extends ViewModel {
                 }
                 else {
                     for (FriendData friendData : myFriendList.getValue()) {
-                        if (friendData.UUID.equals(uuidFriend)) {
+                        if (friendData.getUUID().equals(uuidFriend)) {
                             //이미등록된 친구
 
                         } else {

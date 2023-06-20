@@ -53,6 +53,7 @@ import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.data.User;
 import com.iotalabs.geoar.util.db.DbOpenHelper;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
+import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;
@@ -65,10 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private DataBaseViewModel dataBaseViewModel;
     private GoogleMap mMap;
     private MapView mapView = null;
-    private DbOpenHelper mDbOpenHelper;
-    private Cursor mCursor;
-    private Cursor friendCursor;
     private List<LatLng> users;
+    private List<FriendData> mapFriends;
     private int[] colors = {
             Color.rgb(102, 225, 0), // green
             Color.rgb(255, 0, 0)    // red
@@ -103,17 +102,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         binding.setViewModel(dataBaseViewModel);
 
         users=new ArrayList<LatLng>();
-        dataBaseViewModel.getAllUserData();
-        //liveData의 값을 관찰하다가 값이 바뀌면 실행
-        dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {
-            @Override
-            public void onChanged(List<LatLng> latLngs) {
-                //DB로 부터 받은 데이터가 바뀌면 실행
-                users = latLngs;
-                reNewMap();
-            }
+        mapFriends=new ArrayList<FriendData>();
 
-        });
+        dataBaseViewModel.getAllUserData();
+
 
         binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
             @Override
@@ -144,6 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onStart() {
         super.onStart();
         mapView.onStart();
+
     }
 
     @Override
@@ -187,7 +180,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
         mMap.clear();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(34.928825, 127.498833), 14));//순천국가정원 이동
+        //liveData(전체 사용자의 위치)의 값을 관찰하다가 값이 바뀌면 실행
+        dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {
+            @Override
+            public void onChanged(List<LatLng> latLngs) {
+                //DB로 부터 받은 데이터가 바뀌면 실행
+                users = latLngs;
+                reNewMap();
+            }
+        });
+        dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {
+            @Override
+            public void onChanged(ArrayList<FriendData> friendData) {
+                mapFriends= friendData;
+                reNewMap();
 
+            }
+        });
         createMyLocation();//내위치만들기
         createFriendMarker();//친구마커 만들기
         createHitMap();//히트맵만들기
@@ -210,11 +219,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void createFriendMarker() {//친구마커 만들기
         if (prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
             try {
-                mDbOpenHelper = new DbOpenHelper(getActivity());
-                mDbOpenHelper.open();
-                friendCursor = null;
-                friendCursor = mDbOpenHelper.getAllColumns3();
-
                 //마커 크기 및 아이콘 생성
                 int height = 110;
                 int width = 110;
@@ -223,22 +227,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Bitmap friend_lMarker = Bitmap.createScaledBitmap(b, width, height, false);
                 ////
 
-                while (friendCursor.moveToNext()) {
+                for(FriendData fData : mapFriends){
                     MarkerOptions makerOptions = new MarkerOptions();
                     makerOptions
-                            .position(new LatLng(
-                                            Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_latitude"))),
-                                            Double.parseDouble(friendCursor.getString(friendCursor.getColumnIndex("str_longitude")))
-                                    )
-                            )
-                            .title(friendCursor.getString(friendCursor.getColumnIndex("name")))// 타이틀.
+                            .position(new LatLng(fData.getLatitude(),fData.getLongitude()))
+                            .title(fData.getName())// 타이틀.
                             .icon(BitmapDescriptorFactory.fromBitmap(friend_lMarker));
                     // 2. 마커 생성 (마커를 나타냄)
                     mMap.addMarker(makerOptions);
                 }
-                friendCursor.close();
-                mDbOpenHelper.close();
             } catch (Exception e) {
+                Log.d("MapFragment Marker",e.toString());
             }
         }
     }
