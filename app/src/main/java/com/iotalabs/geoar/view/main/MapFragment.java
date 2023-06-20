@@ -154,7 +154,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.clear();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(34.928825, 127.498833), 14));//순천국가정원 이동
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.startingLoaction, Constants.startingZoom));
 
         //liveData(전체 사용자의 위치)의 값을 관찰하다가 값이 바뀌면 실행
         dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {

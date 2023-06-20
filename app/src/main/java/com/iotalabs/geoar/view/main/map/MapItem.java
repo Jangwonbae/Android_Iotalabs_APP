@@ -32,6 +32,7 @@ public class MapItem {
     public MapItem(){
         gradient = new Gradient(colors, startPoints);//그라데이션
     }
+    //mMap : 구글맵, users : 전체 사용자 위치정보
     public void createHitMap(GoogleMap mMap, List<LatLng> users){
         provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
@@ -42,5 +43,5 @@ public class MapItem {
         Bitmap bitmap = bitmapdraw.getBitmap();
         Bitmap friend_marker = Bitmap.createScaledBitmap(bitmap, markerWidth, markerHeight, false);
         return friend_marker;
-    }
+    }//friend_marker : Bitmap(커스텀 마커)
 }
