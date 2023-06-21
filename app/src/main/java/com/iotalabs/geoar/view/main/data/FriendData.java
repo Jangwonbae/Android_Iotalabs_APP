@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main.adapter.friend_list;
+package com.iotalabs.geoar.view.main.data;
 
 public class FriendData {
     private String UUID;

@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main;
+package com.iotalabs.geoar.view.main.activity.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 
 import com.example.lotalabsappui.R;
+import com.iotalabs.geoar.view.main.activity.MainActivity;
 
 public class SettingFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
     SharedPreferences prefs;

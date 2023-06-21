@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main;
+package com.iotalabs.geoar.view.main.activity.fragment;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,8 +19,9 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.FragmentListBinding;
-import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
-import com.iotalabs.geoar.view.main.adapter.friend_list.MyAdapter;
+import com.iotalabs.geoar.view.main.activity.DataBaseViewModel;
+import com.iotalabs.geoar.view.main.adapter.MyAdapter;
+import com.iotalabs.geoar.view.main.data.FriendData;
 
 import java.util.ArrayList;
 

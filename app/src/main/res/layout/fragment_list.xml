@@ -4,13 +4,13 @@
     <data >
         <variable
             name="viewModel"
-            type="com.iotalabs.geoar.view.main.DataBaseViewModel" />
+            type="com.iotalabs.geoar.view.main.activity.DataBaseViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.iotalabs.geoar.view.main.ListFragment">
+        tools:context="com.iotalabs.geoar.view.main.activity.fragment.ListFragment">
 
         <FrameLayout
             android:id="@+id/frame_layout_fragent"

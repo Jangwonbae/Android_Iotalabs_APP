@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main;
+package com.iotalabs.geoar.view.main.activity.fragment;
 
 
 import android.Manifest;
@@ -6,14 +6,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -35,15 +32,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.heatmaps.Gradient;
-import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.iotalabs.geoar.data.Constants;
-import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
-import com.iotalabs.geoar.view.main.map.MapItem;
+import com.iotalabs.geoar.view.main.activity.DataBaseViewModel;
+import com.iotalabs.geoar.view.main.data.FriendData;
+import com.iotalabs.geoar.view.main.util.map.MapItem;
 import com.unity3d.player.UnityPlayerActivity;
 
 import java.util.ArrayList;

@@ -1,25 +1,21 @@
-package com.iotalabs.geoar.view.main;
+package com.iotalabs.geoar.view.main.activity;
 
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.view.main.data.PersonLocation;
 import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.data.User;
-import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
+import com.iotalabs.geoar.view.main.data.User;
+import com.iotalabs.geoar.view.main.data.FriendData;
 import com.rugovit.eventlivedata.MutableEventLiveData;
 
 import java.util.ArrayList;
@@ -34,8 +30,8 @@ public class DataBaseViewModel extends ViewModel {
     private String UUID;
     private final String formatUUID = "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
     private List<User> allUserList;
-    static MutableEventLiveData<List<LatLng>> allUserLocationList = new MutableEventLiveData<>();//맵에서 구독할 사람위치 리스트
-    static MutableEventLiveData<ArrayList<FriendData>> myFriendList; //친구리스트에서 구독할 친구 리스트
+    public static MutableEventLiveData<List<LatLng>> allUserLocationList = new MutableEventLiveData<>();//맵에서 구독할 사람위치 리스트
+    public static MutableEventLiveData<ArrayList<FriendData>> myFriendList; //친구리스트에서 구독할 친구 리스트
 
     public DataBaseViewModel() {
         UUID = StaticUUID.UUID;

@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.view.main.MainActivity;
+import com.iotalabs.geoar.view.main.activity.MainActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 

@@ -49,14 +49,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.Clock;
-import com.iotalabs.geoar.data.PersonLocation;
+import com.iotalabs.geoar.view.main.data.PersonLocation;
 import com.iotalabs.geoar.data.StaticUUID;
-import com.iotalabs.geoar.util.network.InsertToken;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.util.fcm.PushNoti;
-import com.iotalabs.geoar.view.main.MainActivity;
+import com.iotalabs.geoar.view.main.activity.MainActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

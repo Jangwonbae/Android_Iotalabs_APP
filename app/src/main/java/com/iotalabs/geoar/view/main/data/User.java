@@ -1,9 +1,8 @@
-package com.iotalabs.geoar.data;
+package com.iotalabs.geoar.view.main.data;
 
-import android.util.Log;
+import com.iotalabs.geoar.view.main.data.PersonLocation;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class User {
     private String UserUUID;

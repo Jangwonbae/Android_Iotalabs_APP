@@ -5,17 +5,17 @@
     <data>
         <variable
             name="viewModel"
-            type="com.iotalabs.geoar.view.main.DataBaseViewModel" />
+            type="com.iotalabs.geoar.view.main.activity.DataBaseViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.iotalabs.geoar.view.main.MainActivity">
+        tools:context="com.iotalabs.geoar.view.main.activity.MainActivity">
         <FrameLayout
             android:id="@+id/frame_layout_main_whole"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.iotalabs.geoar.view.main.MainActivity">
+            tools:context="com.iotalabs.geoar.view.main.activity.MainActivity">
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:id="@+id/ft_btn_readQR"

@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main;
+package com.iotalabs.geoar.view.main.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,12 +20,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.iotalabs.geoar.util.auth.Authenticator;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
 import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
-import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
-
-import java.util.ArrayList;
+import com.iotalabs.geoar.view.main.activity.fragment.ListFragment;
+import com.iotalabs.geoar.view.main.activity.fragment.MapFragment;
+import com.iotalabs.geoar.view.main.activity.fragment.SettingFragment;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -34,9 +33,11 @@ public class MainActivity extends AppCompatActivity {
     private IntentIntegrator qrScan;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+
     private MapFragment mapFragment;
     private ListFragment listFragment;
     private SettingFragment settingFragment;
+
     private Animation ft_btn_open, ft_btn_close;
     private Boolean isFabOpen = false;
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장

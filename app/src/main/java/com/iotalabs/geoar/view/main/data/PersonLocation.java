@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.data;
+package com.iotalabs.geoar.view.main.data;
 
 public class PersonLocation {
     public static PersonLocation personLocationInstance;

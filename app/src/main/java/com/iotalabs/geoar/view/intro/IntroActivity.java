@@ -5,25 +5,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityIntroBinding;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
@@ -35,10 +31,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.PersonName;
 import com.iotalabs.geoar.util.auth.Authenticator;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeViewModel;
 import com.iotalabs.geoar.view.enter_name.EnterNameActivity;
-import com.iotalabs.geoar.view.main.DataBaseViewModel;
-import com.iotalabs.geoar.view.main.MainActivity;
+import com.iotalabs.geoar.view.main.activity.DataBaseViewModel;
+import com.iotalabs.geoar.view.main.activity.MainActivity;
 
 public class IntroActivity extends AppCompatActivity {
     private ActivityIntroBinding binding;

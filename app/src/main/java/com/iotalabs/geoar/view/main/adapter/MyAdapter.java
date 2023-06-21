@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main.adapter.friend_list;
+package com.iotalabs.geoar.view.main.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.lotalabsappui.R;
-import com.iotalabs.geoar.view.main.adapter.friend_list.FriendData;
+import com.iotalabs.geoar.view.main.data.FriendData;
 
 import java.util.ArrayList;
 

@@ -38,7 +38,7 @@
             android:exported="true"/>
 
         <activity
-            android:name="com.iotalabs.geoar.view.main.MainActivity"
+            android:name="com.iotalabs.geoar.view.main.activity.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

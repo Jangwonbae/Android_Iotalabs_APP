@@ -1,4 +1,4 @@
-package com.iotalabs.geoar.view.main.map;
+package com.iotalabs.geoar.view.main.util.map;
 
 
 import android.content.Context;
