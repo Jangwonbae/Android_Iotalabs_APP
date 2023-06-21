@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private DataBaseViewModel dataBaseViewModel;
 
     private IntentIntegrator qrScan;
+
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
-    private MapFragment mapFragment;
-    private ListFragment listFragment;
-    private SettingFragment settingFragment;
+    //아이템 선택 부분에서 null 인지 체크하여 최초 생성 시에만 초기화해주기 위해서 각각의 프래그먼트를 null로 선언해준다.
+    private MapFragment mapFragment = null;
+    private ListFragment listFragment = null;
+    private SettingFragment settingFragment = null;
 
     private Animation ft_btn_open, ft_btn_close;
     private Boolean isFabOpen = false;
@@ -44,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
     private final String TAG = "MainAactivityTAG";
     private FirebaseAuth mAuth;
-
 
 
     @Override
@@ -57,10 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
-        //Fragment 객체생성
-        mapFragment = new MapFragment();
-        listFragment = new ListFragment();
-        settingFragment = new SettingFragment();
+        initBottomNavigation(); // 첫 프래그먼트 화면 지정
 
         //백그라운드 위치서비스
         startService(new Intent(this, BackgroundLocationUpdateService.class));
@@ -69,26 +67,6 @@ public class MainActivity extends AppCompatActivity {
         ft_btn_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_ft_btn_open);
         ft_btn_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_ft_btn_close);
 
-        //네비게이션바 클릭리스너
-        binding.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.action_map://MapFragment
-                        setFrag(0);
-                        break;
-                    case R.id.action_list://ListFragment
-                        setFrag(1);
-                        break;
-                    case R.id.action_set://SettingFragment
-                        setFrag(2);
-                        break;
-                }
-
-                return true;
-            }
-        });
-        setFrag(0); // 첫 프래그먼트 화면 지정
 
         //플로팅 버튼 클릭메소드
         binding.ftBtnMain.setOnClickListener(new View.OnClickListener() {//열렸다 닫혔다 이벤트
@@ -115,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
 
@@ -136,35 +113,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 프레그먼트 교체
-    public void setFrag(int n) {
+    public void initBottomNavigation() {
 
-        // FragmentManager를 통해서 FragmentTransaction 획득하기
+        //최초로 보이는 프래그먼트
+        mapFragment = new MapFragment();
         fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
         //setReorderingAllowed(true)는 transaction과 관련된 프래그먼트의 상태 변경을 최적화하여 애니메이션과 전환이 올바르게 작동하도록 함
         fragmentTransaction.setReorderingAllowed(true);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container_view_main, mapFragment).commit();
 
-        switch (n) {
-            case 0://map
-                //replace 위에 쌓여진 Fragement들을 버려버리고 새로운 Fragment를 쌓음
-                fragmentTransaction.replace(R.id.fragment_container_view_main, mapFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                break;
+        //네비게이션바 클릭리스너
+        binding.navigationBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {//최초 선택 시 fragment add, 선택된 프래그먼트 show, 나머지 프래그먼트 hide
+                switch (menuItem.getItemId()) {
+                    //프래그먼트 화면 전환시 상태유지
+                    case R.id.action_map://MapFragment
+                        if(mapFragment == null){
+                            mapFragment = new MapFragment();
+                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main, mapFragment).commit();
+                        }
+                        if(mapFragment != null) fragmentManager.beginTransaction().show(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().hide(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().hide(settingFragment).commit();
+                        break;
 
-            case 1://list
-                fragmentTransaction.replace(R.id.fragment_container_view_main, listFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                break;
+                    case R.id.action_list://ListFragment
+                        if(listFragment == null){
+                            listFragment = new ListFragment();
+                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main,listFragment).commit();
+                        }
+                        if(mapFragment != null) fragmentManager.beginTransaction().hide(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().show(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().hide(settingFragment).commit();
+                        break;
 
-            case 2://setting
-                fragmentTransaction.replace(R.id.fragment_container_view_main, settingFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                break;
-
-        }
+                    case R.id.action_set://SettingFragment
+                        if(settingFragment == null){
+                            settingFragment = new SettingFragment();
+                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main,settingFragment).commit();
+                        }
+                        if(mapFragment != null) fragmentManager.beginTransaction().hide(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().hide(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().show(settingFragment).commit();
+                        break;
+                }
+                return true;
+            }
+        });
 
     }
 
