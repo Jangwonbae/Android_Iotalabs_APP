@@ -4,48 +4,36 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import com.example.lotalabsappui.R;
 import com.example.lotalabsappui.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
-import com.iotalabs.geoar.view.create_qr_code.CreateQR_codeActivity;
 import com.iotalabs.geoar.view.main.activity.fragment.ListFragment;
 import com.iotalabs.geoar.view.main.activity.fragment.MapFragment;
 import com.iotalabs.geoar.view.main.activity.fragment.SettingFragment;
+import com.iotalabs.geoar.view.main.util.floating_button.FloatingButtonCreator;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private DataBaseViewModel dataBaseViewModel;
 
-    private IntentIntegrator qrScan;
-
     private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
-
     //아이템 선택 부분에서 null 인지 체크하여 최초 생성 시에만 초기화해주기 위해서 각각의 프래그먼트를 null로 선언해준다.
     private MapFragment mapFragment = null;
     private ListFragment listFragment = null;
     private SettingFragment settingFragment = null;
+    private FloatingButtonCreator floatingButtonCreator;
 
-    private Animation ft_btn_open, ft_btn_close;
-    private Boolean isFabOpen = false;
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
-    private final String TAG = "MainAactivityTAG";
-    private FirebaseAuth mAuth;
 
 
     @Override
@@ -55,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         binding.setViewModel(dataBaseViewModel);
+        floatingButtonCreator = new FloatingButtonCreator(this,binding);
 
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
@@ -62,54 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         //백그라운드 위치서비스
         startService(new Intent(this, BackgroundLocationUpdateService.class));
-
-        //애니메시션 객체생성
-        ft_btn_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_ft_btn_open);
-        ft_btn_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_ft_btn_close);
-
-
-        //플로팅 버튼 클릭메소드
-        binding.ftBtnMain.setOnClickListener(new View.OnClickListener() {//열렸다 닫혔다 이벤트
-            @Override
-            public void onClick(View v) {
-                anim();
-            }
-        });
-        binding.ftBtnCreateQR.setOnClickListener(new View.OnClickListener() {//QR생성 클릭시 QR코드 엑티비티로 이동
-            @Override
-            public void onClick(View v) {
-                anim();
-                Intent intent = new Intent(MainActivity.this, CreateQR_codeActivity.class);
-                startActivity(intent);
-            }
-        });
-        binding.ftBtnReadQR.setOnClickListener(new View.OnClickListener() {//QR리더기 클릭시 카메라 엑티비티로 이동
-            @Override
-            public void onClick(View v) {
-                anim();
-                qrScan = new IntentIntegrator(MainActivity.this);
-                qrScan.setOrientationLocked(false); // default가 세로모드인데 휴대폰 방향에 따라 가로, 세로로 자동 변경됩니다.
-                qrScan.initiateScan();
-
-            }
-        });
-    }
-
-
-    public void anim() {
-        if (isFabOpen) {
-            binding.ftBtnCreateQR.startAnimation(ft_btn_close);
-            binding.ftBtnReadQR.startAnimation(ft_btn_close);
-            binding.ftBtnCreateQR.setClickable(false);
-            binding.ftBtnReadQR.setClickable(false);
-            isFabOpen = false;
-        } else {
-            binding.ftBtnCreateQR.startAnimation(ft_btn_open);
-            binding.ftBtnReadQR.startAnimation(ft_btn_open);
-            binding.ftBtnCreateQR.setClickable(true);
-            binding.ftBtnReadQR.setClickable(true);
-            isFabOpen = true;
-        }
     }
 
     // 프레그먼트 교체
@@ -119,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         fragmentManager = getSupportFragmentManager();
         //setReorderingAllowed(true)는 transaction과 관련된 프래그먼트의 상태 변경을 최적화하여 애니메이션과 전환이 올바르게 작동하도록 함
-        fragmentTransaction.setReorderingAllowed(true);
         fragmentManager.beginTransaction().replace(R.id.fragment_container_view_main, mapFragment).commit();
 
         //네비게이션바 클릭리스너
@@ -131,31 +71,31 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_map://MapFragment
                         if(mapFragment == null){
                             mapFragment = new MapFragment();
-                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main, mapFragment).commit();
+                            fragmentManager.beginTransaction().setReorderingAllowed(true).add(R.id.fragment_container_view_main, mapFragment).commit();
                         }
-                        if(mapFragment != null) fragmentManager.beginTransaction().show(mapFragment).commit();
-                        if(listFragment != null) fragmentManager.beginTransaction().hide(listFragment).commit();
-                        if(settingFragment != null) fragmentManager.beginTransaction().hide(settingFragment).commit();
+                        if(mapFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).show(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(settingFragment).commit();
                         break;
 
                     case R.id.action_list://ListFragment
                         if(listFragment == null){
                             listFragment = new ListFragment();
-                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main,listFragment).commit();
+                            fragmentManager.beginTransaction().setReorderingAllowed(true).add(R.id.fragment_container_view_main,listFragment).commit();
                         }
-                        if(mapFragment != null) fragmentManager.beginTransaction().hide(mapFragment).commit();
-                        if(listFragment != null) fragmentManager.beginTransaction().show(listFragment).commit();
-                        if(settingFragment != null) fragmentManager.beginTransaction().hide(settingFragment).commit();
+                        if(mapFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).show(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(settingFragment).commit();
                         break;
 
                     case R.id.action_set://SettingFragment
                         if(settingFragment == null){
                             settingFragment = new SettingFragment();
-                            fragmentManager.beginTransaction().add(R.id.fragment_container_view_main,settingFragment).commit();
+                            fragmentManager.beginTransaction().setReorderingAllowed(true).add(R.id.fragment_container_view_main,settingFragment).commit();
                         }
-                        if(mapFragment != null) fragmentManager.beginTransaction().hide(mapFragment).commit();
-                        if(listFragment != null) fragmentManager.beginTransaction().hide(listFragment).commit();
-                        if(settingFragment != null) fragmentManager.beginTransaction().show(settingFragment).commit();
+                        if(mapFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(mapFragment).commit();
+                        if(listFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).hide(listFragment).commit();
+                        if(settingFragment != null) fragmentManager.beginTransaction().setReorderingAllowed(true).show(settingFragment).commit();
                         break;
                 }
                 return true;
