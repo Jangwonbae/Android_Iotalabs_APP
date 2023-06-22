@@ -130,6 +130,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {//세팅에서 값을 바꿀 경우 실행
+        super.onHiddenChanged(hidden);
+        if(!hidden){
+            reNewMap();
+        }
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mapItem.setMap(mMap,getContext());
@@ -145,14 +153,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Toast.makeText(getActivity(), "위치권한을 허용해주세요.", Toast.LENGTH_LONG).show();
             mMap.setMyLocationEnabled(false);
         } else {
-            if (prefs.getBoolean("key_me", true)) {//세팅에서 온상태면(내위치)
+            if (prefs.getBoolean("switch_my_location", true)) {//세팅에서 온상태면(내위치)
                 mMap.setMyLocationEnabled(true);//내위치 만듬
+            }
+            else{
+                mMap.setMyLocationEnabled(false);
             }
         }
     }
 
     public void createFriendMarker() {//친구마커 만들기
-        if (prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
+        if (prefs.getBoolean("switch_friend_location", true)) {//세팅에서 온상태면(친구위치)
             try {
                 for(FriendData fData : mapFriends){
                     mapItem.createMarker(fData);
@@ -163,13 +174,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    public void createHitMap() {//히트맵만들기
+    public void createHeatMap() {//히트맵만들기
         try{
-            if (prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
-                mapItem.createHitMap(users);//히트맵 생성
+            if (prefs.getBoolean("switch_heatmap", true)) {//세팅에서 온상태면(히트맵)
+                mapItem.createHeatMap(users);//히트맵 생성
             }
         }catch (Exception e){
-            Log.d("createHitMap",e.toString());
+            Log.d("createHeatMap",e.toString());
         }
     }
 
@@ -188,7 +199,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.clear();
         createMyLocation();
         createFriendMarker();
-        createHitMap();
+        createHeatMap();
         createPloy();
     }
     public void initMapFloatingButton(){

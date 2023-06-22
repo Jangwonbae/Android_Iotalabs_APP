@@ -9,18 +9,18 @@
         <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_baseline_pin_drop_24"
-            android:key="key_me"
+            android:key="switch_my_location"
             android:title="내위치 on/off" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_baseline_person_pin_circle_60"
-            android:key="key_friend"
+            android:key="switch_friend_location"
             android:title="친구위치 on/off" />
         <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_baseline_groups_24"
-            android:key="key_add_hitt"
+            android:key="switch_heatmap"
             android:summary="밀집도 끄고 켜기"
             android:title="히트맵 on/off" />
     </PreferenceCategory>

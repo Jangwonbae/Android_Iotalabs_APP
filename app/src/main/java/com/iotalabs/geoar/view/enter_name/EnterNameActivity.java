@@ -43,7 +43,7 @@ public class EnterNameActivity extends AppCompatActivity {
             @Override
             public void onChanged(String s) {
                 if (s.trim().equals("")) {
-                    Toast.makeText(getApplicationContext(), "이름을 입력하세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "이름을 입력하세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     //메인 엑티비티 이동
                     Intent intent = new Intent(EnterNameActivity.this, MainActivity.class);

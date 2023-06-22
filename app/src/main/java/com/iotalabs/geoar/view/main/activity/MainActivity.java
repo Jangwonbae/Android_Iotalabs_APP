@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.example.lotalabsappui.R;
@@ -30,11 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment = null;
     private ListFragment listFragment = null;
     private SettingFragment settingFragment = null;
-    private FloatingButtonCreator floatingButtonCreator;
 
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         binding.setViewModel(dataBaseViewModel);
-        floatingButtonCreator = new FloatingButtonCreator(this,binding);
+        new FloatingButtonCreator(this,binding);//플로팅버튼 초기화
 
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
@@ -51,6 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
         //백그라운드 위치서비스
         startService(new Intent(this, BackgroundLocationUpdateService.class));
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     // 프레그먼트 교체
@@ -119,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         dataBaseViewModel.addFriend(result.getContents());
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     /* 뒤로가기 버튼 메소드*/

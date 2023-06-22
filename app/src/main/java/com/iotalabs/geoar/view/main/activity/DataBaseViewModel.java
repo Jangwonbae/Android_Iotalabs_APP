@@ -29,9 +29,9 @@ public class DataBaseViewModel extends ViewModel {
     private DatabaseReference mDatabase;
     private String UUID;
     private final String formatUUID = "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
-    private List<User> allUserList;
     public static MutableEventLiveData<List<LatLng>> allUserLocationList = new MutableEventLiveData<>();//맵에서 구독할 사람위치 리스트
     public static MutableEventLiveData<ArrayList<FriendData>> myFriendList; //친구리스트에서 구독할 친구 리스트
+    public MutableEventLiveData<String> toastMessage = new MutableEventLiveData<>();
 
     public DataBaseViewModel() {
         UUID = StaticUUID.UUID;
@@ -56,7 +56,7 @@ public class DataBaseViewModel extends ViewModel {
                 if (!task.isSuccessful()) {//받아오기 실패
                     Log.e("firebase", "Error getting data", task.getException());
                 } else {//받아오기 성공
-                    allUserList = new ArrayList<User>();
+                    List<User> allUserList = new ArrayList<User>();
                     //USER노드 밑에 있는 자식들을 하나씩 가져옴
                     for (DataSnapshot userSnapshot : task.getResult().child("USER").getChildren()) {
                         //token
@@ -123,20 +123,16 @@ public class DataBaseViewModel extends ViewModel {
                     for (FriendData friendData : myFriendList.getValue()) {
                         if (friendData.getUUID().equals(uuidFriend)) {
                             //이미등록된 친구
-
+                            toastMessage.setValue("이미 등록된 친구입니다.");
                         } else {
                             mDatabase.child("USER").child(UUID).child("follow").child(uuidFriend).setValue(nameFriend);//추가
-                            /*ArrayList<FriendData> tempFriendList = myFriendList.getValue();
-                            tempFriendList.add(new FriendData(uuidFriend, nameFriend));
-                            myFriendList.setValue(tempFriendList);
-                            */
                             getAllUserData();
                         }
                     }
                 }
             } else {
                 //친구 큐알이 아님
-                
+                toastMessage.setValue("친구등록 QR코드가 아닙니다.");
             }
         }
 

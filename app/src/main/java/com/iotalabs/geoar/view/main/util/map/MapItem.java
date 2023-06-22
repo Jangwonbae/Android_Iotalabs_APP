@@ -43,7 +43,7 @@ public class MapItem {
         this.context=context;
     }
 
-    public void createHitMap(List<LatLng> users){
+    public void createHeatMap(List<LatLng> users){
         provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
         map.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
     }
