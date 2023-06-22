@@ -10,10 +10,13 @@ import androidx.core.content.ContextCompat;
 
 import com.example.lotalabsappui.R;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.iotalabs.geoar.view.main.data.FriendData;
 
 import java.util.List;
 
@@ -28,14 +31,30 @@ public class MapItem {
     private final float[] startPoints = {0.2f, 1f};
     private Gradient gradient;
     private HeatmapTileProvider provider;
-
+    private GoogleMap map;
+    private Context context;
     public MapItem(){
         gradient = new Gradient(colors, startPoints);//그라데이션
     }
     //mMap : 구글맵, users : 전체 사용자 위치정보
-    public void createHitMap(GoogleMap mMap, List<LatLng> users){
+
+    public void setMap(GoogleMap map,Context context){
+        this.map=map;
+        this.context=context;
+    }
+
+    public void createHitMap(List<LatLng> users){
         provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
-        mMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
+        map.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
+    }
+    public void createMarker(FriendData fData){
+        MarkerOptions makerOptions = new MarkerOptions();
+        makerOptions
+                .position(new LatLng(fData.getLatitude(),fData.getLongitude()))//위치
+                .title(fData.getName())// 타이틀.
+                .icon(BitmapDescriptorFactory.fromBitmap(setMarker(context)));//마커 모양
+        //마커 생성 (마커를 나타냄)
+        map.addMarker(makerOptions);
     }
     public Bitmap setMarker(Context context){
         //마커 크기 및 아이콘 생성

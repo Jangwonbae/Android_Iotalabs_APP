@@ -126,10 +126,11 @@ public class DataBaseViewModel extends ViewModel {
 
                         } else {
                             mDatabase.child("USER").child(UUID).child("follow").child(uuidFriend).setValue(nameFriend);//추가
-                            ArrayList<FriendData> tempFriendList = myFriendList.getValue();
+                            /*ArrayList<FriendData> tempFriendList = myFriendList.getValue();
                             tempFriendList.add(new FriendData(uuidFriend, nameFriend));
                             myFriendList.setValue(tempFriendList);
-
+                            */
+                            getAllUserData();
                         }
                     }
                 }
@@ -138,6 +139,7 @@ public class DataBaseViewModel extends ViewModel {
                 
             }
         }
+
     }
 
     public void removeFriend(String friendUUID) {

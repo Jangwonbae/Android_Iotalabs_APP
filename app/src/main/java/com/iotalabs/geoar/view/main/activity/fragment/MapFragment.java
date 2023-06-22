@@ -68,29 +68,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
         binding.setViewModel(dataBaseViewModel);
-
-        users=new ArrayList<LatLng>();
-        mapFriends=new ArrayList<FriendData>();
+        initMapFloatingButton();
+        users=new ArrayList<>();
+        mapFriends=new ArrayList<>();
 
         dataBaseViewModel.getAllUserData();
-
-
-        binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
-            @Override
-            public void onClick(View v) {
-                //맵갱신
-                reNewMap();
-            }
-        });
-
-        binding.ftBtnGoAR.setOnClickListener(new View.OnClickListener() {  //AR버튼 이벤트
-            @Override
-            public void onClick(View v) {
-                //AR화면으로 이동
-                Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
-                startActivity(intent);
-            }
-        });
 
         mapView = binding.map;
         mapView.getMapAsync(this);
@@ -105,6 +87,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onStart();
         mapView.onStart();
 
+        if(mMap != null){
+            initObserveLiveData();//다른 엑티비티가 프래그먼트를 가리면 구독이 취소되더라
+            dataBaseViewModel.getAllUserData();
+        }
     }
 
     @Override
@@ -146,31 +132,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.clear();
+        mapItem.setMap(mMap,getContext());
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Constants.startingLoaction, Constants.startingZoom));
-
-        //liveData(전체 사용자의 위치)의 값을 관찰하다가 값이 바뀌면 실행
-        dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {
-            @Override
-            public void onChanged(List<LatLng> latLngs) {
-                //DB로 부터 받은 데이터가 바뀌면 실행
-                users = latLngs;
-                reNewMap();
-            }
-        });
-        dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {
-            @Override
-            public void onChanged(ArrayList<FriendData> friendData) {
-                mapFriends= friendData;
-                reNewMap();
-
-            }
-        });
-        createMyLocation();//내위치만들기
-        createFriendMarker();//친구마커 만들기
-        createHitMap();//히트맵만들기
-        createPloy();
+        initObserveLiveData();
     }
+
 
     public void createMyLocation() {//내위치만들기
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -184,18 +151,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    @SuppressLint("Range")
     public void createFriendMarker() {//친구마커 만들기
         if (prefs.getBoolean("key_friend", true)) {//세팅에서 온상태면(친구위치)
             try {
                 for(FriendData fData : mapFriends){
-                    MarkerOptions makerOptions = new MarkerOptions();
-                    makerOptions
-                            .position(new LatLng(fData.getLatitude(),fData.getLongitude()))//위치
-                            .title(fData.getName())// 타이틀.
-                            .icon(BitmapDescriptorFactory.fromBitmap(mapItem.setMarker(getContext())));//마커 모양
-                    //마커 생성 (마커를 나타냄)
-                    mMap.addMarker(makerOptions);
+                    mapItem.createMarker(fData);
                 }
             } catch (Exception e) {
                 Log.d("MapFragment Marker",e.toString());
@@ -203,11 +163,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    @SuppressLint("Range")
     public void createHitMap() {//히트맵만들기
         try{
             if (prefs.getBoolean("key_add_hitt", true)) {//세팅에서 온상태면(히트맵)
-                mapItem.createHitMap(mMap, users);//히트맵 생성
+                mapItem.createHitMap(users);//히트맵 생성
             }
         }catch (Exception e){
             Log.d("createHitMap",e.toString());
@@ -231,5 +190,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         createFriendMarker();
         createHitMap();
         createPloy();
+    }
+    public void initMapFloatingButton(){
+        binding.ftBtnRenew.setOnClickListener(new View.OnClickListener() {  //새로고침 버튼 이벤트
+            @Override
+            public void onClick(View v) {
+                //맵갱신
+                dataBaseViewModel.getAllUserData();
+            }
+        });
+
+        binding.ftBtnGoAR.setOnClickListener(new View.OnClickListener() {  //AR버튼 이벤트
+            @Override
+            public void onClick(View v) {
+                //AR화면으로 이동
+                Intent intent = new Intent(getActivity(), UnityPlayerActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    public void initObserveLiveData(){
+        //liveData(전체 사용자의 위치)의 값을 관찰하다가 값이 바뀌면 실행
+        dataBaseViewModel.allUserLocationList.observeInOnStart(this, new Observer<List<LatLng>>() {
+            @Override
+            public void onChanged(List<LatLng> latLngs) {
+                //DB로 부터 받은 데이터가 바뀌면 실행
+                users = latLngs;
+                reNewMap();
+            }
+        });
+        dataBaseViewModel.myFriendList.observeInOnStart(this, new Observer<ArrayList<FriendData>>() {
+            @Override
+            public void onChanged(ArrayList<FriendData> friendData) {
+                mapFriends=friendData;
+                reNewMap();
+            }
+        });
     }
 }
