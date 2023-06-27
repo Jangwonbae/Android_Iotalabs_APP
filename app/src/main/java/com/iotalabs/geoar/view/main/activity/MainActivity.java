@@ -50,15 +50,9 @@ public class MainActivity extends AppCompatActivity {
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
 
         //백그라운드 위치서비스
-        startService(new Intent(this, BackgroundLocationUpdateService.class));
-
+        BackgroundServiceStart();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
 
     // 프레그먼트 교체
     public void initBottomNavigation() {
@@ -108,16 +102,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
 
     //백그라운드 서비스 시작
-    public void service_start() {
+    public void BackgroundServiceStart() {
         startService(new Intent(this, BackgroundLocationUpdateService.class));
     }
 
     //백그라운드 서비스 종료
-    public void service_stop() {
+    public void BackgroundServiceStop() {
         stopService(new Intent(this, BackgroundLocationUpdateService.class));
     }
     @SuppressLint("Range")
@@ -126,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         dataBaseViewModel.addFriend(result.getContents());
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     /* 뒤로가기 버튼 메소드*/
@@ -144,5 +136,4 @@ public class MainActivity extends AppCompatActivity {
             toast.cancel();
         }//위에서 저장한 현재시간값에 2초안에 버튼을 한번 더 누르면 앱을 종료함.
     }
-
 }

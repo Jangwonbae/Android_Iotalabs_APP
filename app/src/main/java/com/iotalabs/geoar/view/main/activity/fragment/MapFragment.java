@@ -68,11 +68,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
         binding.setViewModel(dataBaseViewModel);
-        initMapFloatingButton();
+        initMapFloatingButton();//플로팅버튼 초기화
         users=new ArrayList<>();
         mapFriends=new ArrayList<>();
 
-        dataBaseViewModel.getAllUserData();
+        dataBaseViewModel.getAllUserData();//데이터 받아오기
 
         mapView = binding.map;
         mapView.getMapAsync(this);
@@ -195,7 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.addPolygon(polygonOptions);
     }
 
-    public void reNewMap() {
+    public void reNewMap() {//맵 갱신
         mMap.clear();
         createMyLocation();
         createFriendMarker();
