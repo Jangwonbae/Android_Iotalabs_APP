@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ApiException;
@@ -46,28 +49,16 @@ import com.iotalabs.geoar.data.Constants;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Ketan Ramani on 05/11/18.
- */
 
-public class BackgroundLocationUpdateService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
-    /* Declare in manifest
-    <service android:name=".BackgroundLocationUpdateService"/>
-    */
+public class BackgroundLocationUpdateService extends Service implements  LocationListener {
 
     private final String TAG = "BackgroundService";
     private final String TAG_LOCATION = "TAG_LOCATION";
     private Context context;
     private boolean stopService = false;
 
-    /* For Google Fused API */
-    protected GoogleApiClient mGoogleApiClient;
-    protected LocationSettingsRequest mLocationSettingsRequest;
-    private String UUID;
-    private String str_latitude = "0.0", str_longitude = "0.0";
-    private String all_g = "0.0", all_w = "0.0";
 
+    protected LocationSettingsRequest mLocationSettingsRequest;
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
     private LocationCallback mLocationCallback;
@@ -75,6 +66,8 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private Location mCurrentLocation;
     /* For Google Fused API */
 
+    private String UUID;
+    private String str_latitude = "0.0", str_longitude = "0.0";
     private List<LatLng> area;
 
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
@@ -85,6 +78,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     private NotificationCreator getOutNotification;
     private NotificationCreator useingLocationNotification;
 
+    //Service
     @Override
     public void onCreate() {
         super.onCreate();
@@ -94,10 +88,11 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
+
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {//서비스를 시작하도록 요청
         StartForeground();
         final Handler handler = new Handler();
         final Runnable runnable = new Runnable() {
@@ -146,13 +141,13 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         };
 
         handler.postDelayed(runnable, 5000);//5초마다
-        buildGoogleApiClient();
+        startLocationCheck();
 
         return START_STICKY;
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroy() {//서비스를 소멸시킬 때 호출
         Log.e(TAG, "Service Stopped");
         stopService = true;
         if (mFusedLocationClient != null) {
@@ -166,7 +161,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
+    }//다른 구성요소와 서비스를 바인딩하려는 경우 호출
 
     private void StartForeground() {//서비스가 시작할 때 <위치정보 사용중> 노티 띄우기
         String title = "IotalabsApp";
@@ -178,8 +173,9 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
         startForeground(101, useingLocationNotification.showUseingLocationNoti());
     }
 
+    //LocationListener
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location) {//위치 이동이나 시간 경과 등으로 호출
         Log.e(TAG_LOCATION, "Location Changed Latitude : " + location.getLatitude() + "\tLongitude : " + location.getLongitude());
 
         str_latitude = String.valueOf(location.getLatitude());
@@ -197,30 +193,29 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
+    public void onStatusChanged(String provider, int status, Bundle extras) {//위치 공급자의 상태가 바뀔때 호출
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
-
+    public void onProviderEnabled(String provider) {//위치 공급자가 사용 불가능해질 때 호출
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled(String provider) {//위치 공급자가 사용 가능해질 때
 
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10 * 1000);
-        mLocationRequest.setFastestInterval(5 * 1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        builder.setAlwaysShow(true);
+    public void startLocationCheck(){
+        mLocationRequest = LocationRequest.create()
+                .setInterval(10 * 1000)//최대 10초
+                .setFastestInterval(5 * 1000)//최대 5초
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);//가장 정확하게
+        mSettingsClient = LocationServices.getSettingsClient(context);//위에서 설정한 정보를 세팅
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest)
+                .setAlwaysShow(true);
         mLocationSettingsRequest = builder.build();
 
         mSettingsClient
@@ -229,6 +224,7 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         Log.e(TAG_LOCATION, "GPS Success");
+                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
                         requestLocationUpdate();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -255,29 +251,6 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                 Log.e(TAG_LOCATION, "checkLocationSettings -> onCanceled");
             }
         });
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        connectGoogleClient();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        buildGoogleApiClient();
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-        mSettingsClient = LocationServices.getSettingsClient(context);
-
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        connectGoogleClient();
 
         mLocationCallback = new LocationCallback() {
             @Override
@@ -288,14 +261,6 @@ public class BackgroundLocationUpdateService extends Service implements GoogleAp
                 onLocationChanged(mCurrentLocation);
             }
         };
-    }
-
-    private void connectGoogleClient() {
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int resultCode = googleAPI.isGooglePlayServicesAvailable(context);
-        if (resultCode == ConnectionResult.SUCCESS) {
-            mGoogleApiClient.connect();
-        }
     }
 
     @SuppressLint("MissingPermission")

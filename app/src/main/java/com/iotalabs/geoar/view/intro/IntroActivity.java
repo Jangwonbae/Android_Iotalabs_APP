@@ -38,11 +38,11 @@ import com.iotalabs.geoar.view.main.activity.MainActivity;
 public class IntroActivity extends AppCompatActivity {
     private ActivityIntroBinding binding;
     private static final String TAG = IntroActivity.class.getSimpleName();
-    private static final int GPS_UTIL_LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private static final int GPS_UTIL_LOCATION_RESOLUTION_REQUEST_CODE = 101;
-    public static final int DEFAULT_LOCATION_REQUEST_PRIORITY = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
-    public static final long DEFAULT_LOCATION_REQUEST_INTERVAL = 2000L;//최대2초
-    public static final long DEFAULT_LOCATION_REQUEST_FAST_INTERVAL = 2000L;//최대2초
+    private static final int GPS_UTIL_LOCATION_PERMISSION_REQUEST_CODE = 100; //퍼미션 REQUEST_CODE
+    private static final int GPS_UTIL_LOCATION_RESOLUTION_REQUEST_CODE = 101; //퍼미션 REQUEST_CODE
+    public static final int DEFAULT_LOCATION_REQUEST_PRIORITY = LocationRequest.PRIORITY_HIGH_ACCURACY; //가장 정확하게
+    public static final long DEFAULT_LOCATION_REQUEST_INTERVAL = 10 * 1000;//최대 10초
+    public static final long DEFAULT_LOCATION_REQUEST_FAST_INTERVAL = 5 * 1000;//최소 5초
     private LocationRequest locationRequest;
 
     @Override
@@ -65,7 +65,7 @@ public class IntroActivity extends AppCompatActivity {
 
     private void checkLocationPermission() {
         int accessLocation = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (accessLocation == PackageManager.PERMISSION_GRANTED) {//위치권한이 허용됐는지 체크{
+        if (accessLocation == PackageManager.PERMISSION_GRANTED) {//위치권한이 허용됐는지 체크
             checkLocationSetting();//gps세팅 확인하는 메소드
         }
         else {//위치권한이 허용되지않았으면 요청
@@ -119,10 +119,12 @@ public class IntroActivity extends AppCompatActivity {
         locationRequest.setInterval(DEFAULT_LOCATION_REQUEST_INTERVAL);
         locationRequest.setFastestInterval(DEFAULT_LOCATION_REQUEST_FAST_INTERVAL);
 
-        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setAlwaysShow(true);
-        settingsClient.checkLocationSettings(builder.build())
-                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);//위에서 설정한 정보를 세팅
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+                .setAlwaysShow(true);
+        settingsClient.checkLocationSettings(builder.build())//위에서 설정한 정보를 제공할 수 있는지 확인
+                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {//제공할 수 있으면 (통상적으로 위치서비스가 활성화 되있을 때)
                     @Override
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 
@@ -145,12 +147,12 @@ public class IntroActivity extends AppCompatActivity {
                         }
                     }
                 })
-                .addOnFailureListener(IntroActivity.this, new OnFailureListener() {
+                .addOnFailureListener(IntroActivity.this, new OnFailureListener() {//제공할 수 없으면 (통상적으로 위치서비스가 활성화 되있지 않을 때)
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         int statusCode = ((ApiException) e).getStatusCode();
                         switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED://설정을 통해 문제해결이 가능할 때
                                 try {
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(IntroActivity.this, GPS_UTIL_LOCATION_RESOLUTION_REQUEST_CODE);
@@ -158,7 +160,7 @@ public class IntroActivity extends AppCompatActivity {
                                     Log.w(TAG, "unable to start resolution for result due to " + sie.getLocalizedMessage());//고칠수있는문제
                                 }
                                 break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE://설정을 통해 문제해결이 가능하지 않을 때
                                 String errorMessage = "location settings are inadequate, and cannot be fixed here. Fix in Settings.";//못고치는문제
                                 Log.e(TAG, errorMessage);
                         }
