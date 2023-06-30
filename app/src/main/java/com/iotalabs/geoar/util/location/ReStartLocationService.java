@@ -61,8 +61,8 @@ public class ReStartLocationService extends Service {
         Intent in = new Intent(this, LocationService.class);
         startService(in);
 
-        stopForeground(true);
-        stopSelf();
+        stopForeground(true);//노티 지우고
+        stopSelf();//서비스 종료
         return START_STICKY;
     }
 
@@ -88,7 +88,7 @@ public class ReStartLocationService extends Service {
         String channelName = "2";
 
         useingLocationNotification = new NotificationCreator(title,message,getApplicationContext(),channelId,channelName);
-        startForeground(101, useingLocationNotification.showUseingLocationNoti());
+        startForeground(9, useingLocationNotification.showUseingLocationNoti());
     }
 
 }

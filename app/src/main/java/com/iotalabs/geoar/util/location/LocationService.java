@@ -74,69 +74,14 @@ public class LocationService extends Service implements LocationListener {
 
     //Service
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {//서비스를 시작하도록 요청
+        StartForeground();
         context = this;
         UUID= StaticUUID.UUID;
         area = Constants.area;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
-        Log.e("sssssssssssssssss","ssssssssssssssssss");
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {//서비스를 시작하도록 요청
-        StartForeground();
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    if (!stopService) {
-                        //데이터 베이스에 나의 위치정보를 저장
-                        mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
-                        boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
-                                Double.parseDouble(str_longitude)),area,true);
-                        if(inside){//내위치가 지정구역안에 있는지 체크
-                            geo_check = true;
-                        }else{//벗어났다면 자신에게 알림 후 나를 팔로우하는 친구에게 푸시알림
-                            if(geo_check==true){
-                                String title = "지정영역 벗어남 알림";
-                                String message = "지정영역을 벗어났습니다.";
-                                String channelId = "getOutArea";
-                                String channelName = "locationGetOutArea";
-
-                                getOutNotification= new NotificationCreator(title, message,
-                                        getApplicationContext(), channelId, channelName);//노티 생성
-                                getOutNotification.showNotification();
-
-                                //푸시알림
-                                /*
-                                SharedPreferences prefs = getSharedPreferences("person_name",0);
-                                String name = prefs.getString("name","");
-                                task4=new PushNoti();//생성
-                                task4.execute("http://" + IP_ADDRESS + "/push.php", UUID,name);//친구에게 노티보냄*/
-
-                                geo_check=false;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                } finally {
-                    if (!stopService) {
-                        handler.postDelayed(this, TimeUnit.SECONDS.toMillis(10));
-                    }
-                }
-            }
-        };
-
-        handler.postDelayed(runnable, 5000);//5초마다
-
         startLocationCheck();
 
         return START_STICKY;
@@ -150,7 +95,7 @@ public class LocationService extends Service implements LocationListener {
         String channelName = "channel_location";
 
         useingLocationNotification = new NotificationCreator(title,message,getApplicationContext(),channelId,channelName);
-        startForeground(0, useingLocationNotification.showUseingLocationNoti());
+        startForeground(1, useingLocationNotification.showUseingLocationNoti());
     }
     @Override
     public void onDestroy() {//서비스를 소멸시킬 때 호출
@@ -166,7 +111,7 @@ public class LocationService extends Service implements LocationListener {
     protected void setAlarmTimer() {
         final Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.SECOND, 30);//30초
+        c.add(Calendar.SECOND, 60);//60초
         Intent intent = new Intent(this, AlarmRecever.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0,intent,0);
 
@@ -196,6 +141,36 @@ public class LocationService extends Service implements LocationListener {
             requestLocationUpdate();
         } else {
             Log.e(TAG_LOCATION, "Latitude : " + location.getLatitude() + "\tLongitude : " + location.getLongitude());
+            mDatabase.child("USER").child(UUID).child("location").setValue(personLocation);
+            boolean inside= PolyUtil.containsLocation(new LatLng(Double.parseDouble(str_latitude),
+                    Double.parseDouble(str_longitude)),area,true);
+            if(inside){//내위치가 지정구역안에 있는지 체크
+                geo_check = true;//영구 저장되야함(임시)
+                //////////////////////////////////////////////////////////
+            }else{//벗어났다면 자신에게 알림 후 나를 팔로우하는 친구에게 푸시알림
+                if(geo_check==true){
+                    String title = "지정영역 벗어남 알림";
+                    String message = "지정영역을 벗어났습니다.";
+                    String channelId = "getOutArea";
+                    String channelName = "locationGetOutArea";
+
+                    getOutNotification= new NotificationCreator(title, message,
+                            getApplicationContext(), channelId, channelName);//노티 생성
+                    getOutNotification.showNotification();
+
+                    //푸시알림
+                                /*
+                                SharedPreferences prefs = getSharedPreferences("person_name",0);
+                                String name = prefs.getString("name","");
+                                task4=new PushNoti();//생성
+                                task4.execute("http://" + IP_ADDRESS + "/push.php", UUID,name);//친구에게 노티보냄*/
+
+                    geo_check=false;
+                }
+            }
+            //종료
+            stopForeground(true);
+            stopSelf();
         }
     }
 

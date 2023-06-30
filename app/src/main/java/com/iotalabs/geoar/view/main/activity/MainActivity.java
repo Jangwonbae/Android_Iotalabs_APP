@@ -55,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
 
 
-        LocationServiceStart();
+        //LocationServiceStart();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocationServiceStop();
+        //LocationServiceStop();
+        LocationServiceStart();
     }
 
     // 프레그먼트 교체
