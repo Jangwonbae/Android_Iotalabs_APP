@@ -8,7 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
@@ -21,7 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LotalabsAppUi"
         android:usesCleartextTraffic="true">
-
         <activity
             android:name="com.iotalabs.geoar.view.intro.IntroActivity"
             android:exported="true"
@@ -66,6 +68,17 @@
             </intent-filter>
         </service>
         <service android:name="com.iotalabs.geoar.util.location.BackgroundLocationUpdateService" />
+        <service android:name="com.iotalabs.geoar.util.location.LocationService" />
+        <service android:name="com.iotalabs.geoar.util.location.ReStartLocationService"/>
+        <receiver android:name="com.iotalabs.geoar.util.location.AlarmRecever"/>
+        <receiver android:name="com.iotalabs.geoar.util.location.RebootRecever"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

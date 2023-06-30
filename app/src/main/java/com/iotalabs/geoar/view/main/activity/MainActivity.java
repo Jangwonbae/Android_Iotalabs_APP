@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +20,9 @@ import com.example.lotalabsappui.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.iotalabs.geoar.util.location.AlarmRecever;
 import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
+import com.iotalabs.geoar.util.location.LocationService;
 import com.iotalabs.geoar.view.main.activity.fragment.ListFragment;
 import com.iotalabs.geoar.view.main.activity.fragment.MapFragment;
 import com.iotalabs.geoar.view.main.activity.fragment.SettingFragment;
@@ -32,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment = null;
     private ListFragment listFragment = null;
     private SettingFragment settingFragment = null;
-
+    public Intent serviceIntent;
     private long backKeyPressedTime = 0; //뒤로가기 버튼 눌렀던 시간 저장
     private Toast toast;//첫번째 뒤로가기 버튼을 누를때 표시하는 변수
 
@@ -49,10 +54,14 @@ public class MainActivity extends AppCompatActivity {
 
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
 
-        //백그라운드 위치서비스
-        BackgroundServiceStart();
-    }
 
+        LocationServiceStart();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocationServiceStop();
+    }
 
     // 프레그먼트 교체
     public void initBottomNavigation() {
@@ -105,13 +114,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //백그라운드 서비스 시작
-    public void BackgroundServiceStart() {
-        startService(new Intent(this, BackgroundLocationUpdateService.class));
+    public void LocationServiceStart() {
+        //백그라운드 위치서비스
+        if (LocationService.serviceIntent==null) {
+            serviceIntent = new Intent(this, LocationService.class);
+            startService(serviceIntent);
+        } else {
+            serviceIntent = LocationService.serviceIntent;//getInstance().getApplication();
+        }
     }
 
     //백그라운드 서비스 종료
-    public void BackgroundServiceStop() {
-        stopService(new Intent(this, BackgroundLocationUpdateService.class));
+    public void LocationServiceStop() {
+        if (serviceIntent != null) {
+            stopService(serviceIntent);
+            serviceIntent = null;
+        }
     }
     @SuppressLint("Range")
     @Override

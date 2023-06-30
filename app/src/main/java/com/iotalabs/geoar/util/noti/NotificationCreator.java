@@ -87,7 +87,7 @@ public class NotificationCreator {
             channel.setSound(notiSound, null);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(0, builder.build());
+        notificationManager.notify(1, builder.build());
     }
 
     private RemoteViews getCustomDesign(String title, String message)
