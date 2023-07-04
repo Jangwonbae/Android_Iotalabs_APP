@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -50,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 public class LocationService extends Service implements LocationListener {
     public static Intent serviceIntent = null;
-
+    private SharedPreferences prefs;
     private final String TAG = "BackgroundService";
     private final String TAG_LOCATION = "TAG_LOCATION";
     private Context context;
@@ -80,6 +82,7 @@ public class LocationService extends Service implements LocationListener {
         UUID= StaticUUID.UUID;
         area = Constants.area;
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
         startLocationCheck();
@@ -92,7 +95,7 @@ public class LocationService extends Service implements LocationListener {
         String title = "IotalabsApp";
         String message = "위치 정보 사용중";
         String channelId = "channel_location";
-        String channelName = "channel_location";
+        String channelName = "위치 정보 사용중";
 
         useingLocationNotification = new NotificationCreator(title,message,getApplicationContext(),channelId,channelName);
         startForeground(1, useingLocationNotification.showUseingLocationNoti());
@@ -105,7 +108,9 @@ public class LocationService extends Service implements LocationListener {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Log.e(TAG_LOCATION, "Location Update Callback Removed");
         }
-        setAlarmTimer();
+        if (prefs.getBoolean("switch_LocationService", true) && !prefs.getBoolean("onState",false)) {//세팅에서 온상태면(백그라운드 위치사용) and 어플이 꺼진상태면
+            setAlarmTimer();
+        }
         super.onDestroy();
     }
     protected void setAlarmTimer() {

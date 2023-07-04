@@ -6,11 +6,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -31,7 +34,7 @@ import com.iotalabs.geoar.view.main.util.floating_button.FloatingButtonCreator;
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private DataBaseViewModel dataBaseViewModel;
-
+    private SharedPreferences prefs;
     private FragmentManager fragmentManager;
     //아이템 선택 부분에서 null 인지 체크하여 최초 생성 시에만 초기화해주기 위해서 각각의 프래그먼트를 null로 선언해준다.
     private MapFragment mapFragment = null;
@@ -53,14 +56,19 @@ public class MainActivity extends AppCompatActivity {
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
-
-
+        //어떤값을 false로 바꿔
+        prefs =  PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor =prefs.edit();
+        editor.putBoolean("onState",true);
+        editor.apply();
         //LocationServiceStart();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //LocationServiceStop();
+        SharedPreferences.Editor editor =prefs.edit();
+        editor.putBoolean("onState",false);
+        editor.apply();
         LocationServiceStart();
     }
 

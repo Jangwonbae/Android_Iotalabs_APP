@@ -19,7 +19,6 @@ import com.iotalabs.geoar.view.main.activity.MainActivity;
 public class SettingFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     SharedPreferences setting_prefs;
-    private Preference exit;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -27,26 +26,6 @@ public class SettingFragment extends PreferenceFragmentCompat implements SharedP
 
         setting_prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        exit =(Preference)findPreference("exit");
-        exit.setOnPreferenceClickListener(preference -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("어플을 종료하시겠습니까?");
-            builder.setMessage(Html.fromHtml("어플이 재실행되기 전까지 백그라운드 서비스를 이용할 수 없습니다.",Html.FROM_HTML_MODE_LEGACY));
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    ((MainActivity)getActivity()).LocationServiceStop();
-                    getActivity().finish();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            builder.create().show();
-            return true;
-        });
     }
 
     @Override

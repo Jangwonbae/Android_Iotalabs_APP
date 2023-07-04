@@ -84,8 +84,8 @@ public class ReStartLocationService extends Service {
     private void StartForeground() {//서비스가 시작할 때 <위치정보 사용중> 노티 띄우기
         String title = "IotalabsApp";
         String message = "위치 정보 사용중";
-        String channelId = "1";
-        String channelName = "2";
+        String channelId = "ReStartNoti";
+        String channelName = "위치 정보 사용 알림";
 
         useingLocationNotification = new NotificationCreator(title,message,getApplicationContext(),channelId,channelName);
         startForeground(9, useingLocationNotification.showUseingLocationNoti());
