@@ -11,10 +11,10 @@ public class AlarmRecever extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//Android가 Oreo 이후 버전이면 (SDK_INT >= O)
             //Android에서 제공하는 죽지않는(Foreground) 서비스인 RestartService를 startForegroundService로 실행한다.
-            Intent reStartIn = new Intent(context, ReStartLocationService.class);
+            Intent reStartIn = new Intent(context, ReStartBackgroundLocationService.class);
             context.startForegroundService(reStartIn);
         } else {
-            Intent startIn = new Intent(context, LocationService.class);
+            Intent startIn = new Intent(context, BackgroundLocationService.class);
             context.startService(startIn);
         }
     }

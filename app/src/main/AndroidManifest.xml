@@ -67,10 +67,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="com.iotalabs.geoar.util.location.BackgroundLocationUpdateService" />
-        <service android:name="com.iotalabs.geoar.util.location.LocationService"
+        <service android:name="com.iotalabs.geoar.util.location.LocationService" />
+        <service android:name="com.iotalabs.geoar.util.location.BackgroundLocationService"
             android:foregroundServiceType="location"/>
-        <service android:name="com.iotalabs.geoar.util.location.ReStartLocationService"/>
+        <service android:name="com.iotalabs.geoar.util.location.ReStartBackgroundLocationService"/>
         <receiver android:name="com.iotalabs.geoar.util.location.AlarmRecever"/>
         <receiver android:name="com.iotalabs.geoar.util.location.RebootRecever"
             android:enabled="true"

@@ -4,18 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.example.lotalabsappui.R;
@@ -23,8 +18,7 @@ import com.example.lotalabsappui.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.iotalabs.geoar.util.location.AlarmRecever;
-import com.iotalabs.geoar.util.location.BackgroundLocationUpdateService;
+import com.iotalabs.geoar.util.location.BackgroundLocationService;
 import com.iotalabs.geoar.util.location.LocationService;
 import com.iotalabs.geoar.view.main.activity.fragment.ListFragment;
 import com.iotalabs.geoar.view.main.activity.fragment.MapFragment;
@@ -56,20 +50,24 @@ public class MainActivity extends AppCompatActivity {
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
-        //어떤값을 false로 바꿔
+        //pres 상태를 on으로 변경하여 BackgroundLoactionService의 재실행을 종료
         prefs =  PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor =prefs.edit();
         editor.putBoolean("onState",true);
         editor.apply();
-        //LocationServiceStart();
+        //앱이 켜져있는 동안엔 10초마다 위치정보를 전송하는  LocationService 실행
+        LocationServiceStart();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LocationServiceStop();
+        //pres 상태를 off로 변경하여 BackgroundLoactionService의 재실행
         SharedPreferences.Editor editor =prefs.edit();
         editor.putBoolean("onState",false);
         editor.apply();
-        LocationServiceStart();
+        //종료시 3분마다 실행되는 BackgroundLocationService실행
+        startService(new Intent(this,BackgroundLocationService.class));
     }
 
     // 프레그먼트 교체
@@ -121,16 +119,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    //백그라운드 서비스 시작
+    //위치 서비스 시작
     public void LocationServiceStart() {
         //백그라운드 위치서비스
         if (LocationService.serviceIntent==null) {
             serviceIntent = new Intent(this, LocationService.class);
-            startService(serviceIntent);
+            LocationService.serviceIntent=serviceIntent;
         } else {
-            serviceIntent = LocationService.serviceIntent;//getInstance().getApplication();
+            serviceIntent = BackgroundLocationService.serviceIntent;//getInstance().getApplication();
         }
+        startService(serviceIntent);
     }
 
     //백그라운드 서비스 종료
