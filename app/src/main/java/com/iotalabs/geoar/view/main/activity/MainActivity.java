@@ -19,6 +19,8 @@ import com.example.lotalabsappui.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.iotalabs.geoar.data.ClassUUID;
+import com.iotalabs.geoar.util.auth.Authenticator;
 import com.iotalabs.geoar.util.location.BackgroundLocationService;
 import com.iotalabs.geoar.util.location.LocationService;
 import com.iotalabs.geoar.view.main.activity.fragment.ListFragment;
@@ -47,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         binding.setViewModel(dataBaseViewModel);
         new FloatingButtonCreator(this,binding);//플로팅버튼 초기화
+
+        new ClassUUID(getBaseContext());//UUID를 static으로 저장
+        new DataBaseViewModel().getAllUserData();//데이터받기
+        new Authenticator().authFireBase();//인증
 
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 

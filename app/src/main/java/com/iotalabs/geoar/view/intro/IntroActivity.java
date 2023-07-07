@@ -51,10 +51,6 @@ public class IntroActivity extends AppCompatActivity {
         //데이터 바인딩
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro);
         binding.setActivity(this);
-
-        new ClassUUID(getBaseContext());//UUID를 static으로 저장
-        new DataBaseViewModel().getAllUserData();//데이터받기
-        new Authenticator().authFireBase();//인증
     }
 
     @Override

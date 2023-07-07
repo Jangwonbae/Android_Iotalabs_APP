@@ -40,9 +40,7 @@ public class NotificationCreator {
         this.notiChannelName=channelName;
 
         intent = new Intent(notiContext, MainActivity.class);
-        intent .setAction(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         builder = new NotificationCompat.Builder(notiContext, notiChannelId)
                 .setAutoCancel(true)
