@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.example.lotalabsappui.R;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         //앱이 켜져있는 동안엔 10초마다 위치정보를 전송하는  LocationService 실행
         LocationServiceStart();
+        Log.d("create","ssssssssssssssssssss");
     }
     @Override
     protected void onDestroy() {
@@ -125,14 +127,15 @@ public class MainActivity extends AppCompatActivity {
         if (LocationService.serviceIntent==null) {
             serviceIntent = new Intent(this, LocationService.class);
             LocationService.serviceIntent=serviceIntent;
+            startService(serviceIntent);
         } else {
             serviceIntent = BackgroundLocationService.serviceIntent;//getInstance().getApplication();
         }
-        startService(serviceIntent);
     }
 
     //백그라운드 서비스 종료
     public void LocationServiceStop() {
+        Log.d("destory","ssssssssssssssssssss");
         if (serviceIntent != null) {
             stopService(serviceIntent);
             serviceIntent = null;

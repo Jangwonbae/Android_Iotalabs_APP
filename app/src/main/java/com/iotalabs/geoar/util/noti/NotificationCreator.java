@@ -26,6 +26,7 @@ public class NotificationCreator {
     private String notiChannelId;
     private String notiChannelName;
 
+    private Intent intent;
     private Uri notiSound;
     private NotificationCompat.Builder builder;
     private NotificationChannel channel;
@@ -38,12 +39,12 @@ public class NotificationCreator {
         this.notiChannelId=channelId;
         this.notiChannelName=channelName;
 
-        Intent intent = new Intent(notiContext, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(notiContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        intent = new Intent(notiContext, MainActivity.class);
+        intent .setAction(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         builder = new NotificationCompat.Builder(notiContext, notiChannelId)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.iotalabs_app_icon)
                 .setContentTitle(notiTitle)
@@ -54,7 +55,8 @@ public class NotificationCreator {
     }
 
     public Notification showUseingLocationNoti(){
-
+        PendingIntent pendingIntent = PendingIntent.getActivity(notiContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//Android 8.0(API 수준 26)부터는 모든 알림을 채널에 할당해야 합니다.
 
             channel = new NotificationChannel(notiChannelId, notiChannelName, NotificationManager.IMPORTANCE_LOW);//소리없음
@@ -69,6 +71,7 @@ public class NotificationCreator {
     }
 
     public void showNotification(){
+        PendingIntent pendingIntent = PendingIntent.getActivity(notiContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             builder = builder.setContent(getCustomDesign(notiTitle, notiMessage));
@@ -77,6 +80,7 @@ public class NotificationCreator {
         notiSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);//사운드
 
         builder.setSound(notiSound)
+                .setContentIntent(pendingIntent)
                 .setVibrate(new long[] {1000, 1000, 1000, 1000, 1000})
                 .setOnlyAlertOnce(true);
 

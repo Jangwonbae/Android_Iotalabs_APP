@@ -29,11 +29,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage)
     {
         String channel_id = "PushNotification";
-        String channel_name = "web_app";
+        String channel_name = "푸시알림";
         if (remoteMessage.getData().size() > 0)//받은 데이터가 있으면
         {//알림 띄우기
             notificationCreator = new NotificationCreator(remoteMessage.getData().get("title"), remoteMessage.getData().get("message"),
-                    getApplicationContext(),channel_id, channel_name);
+                    getBaseContext(),channel_id, channel_name);
             notificationCreator.showNotification();
         }
     }
