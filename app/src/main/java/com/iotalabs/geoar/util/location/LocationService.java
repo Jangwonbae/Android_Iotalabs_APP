@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.Clock;
+import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.util.noti.NotificationCreator;
 import com.iotalabs.geoar.view.main.data.PersonLocation;
 import com.iotalabs.geoar.data.StaticUUID;
@@ -48,7 +50,8 @@ public class LocationService extends Service implements  LocationListener {
     private Context context;
     private boolean stopService = false;
 
-
+    private PushNoti pushNoti;
+    private String IP_ADDRESS;
     protected LocationSettingsRequest mLocationSettingsRequest;
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -76,8 +79,11 @@ public class LocationService extends Service implements  LocationListener {
         UUID= StaticUUID.UUID;
         area = Constants.area;
 
+        IP_ADDRESS= Constants.IP_ADDRESS;
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
+
 
     }
 
@@ -109,12 +115,11 @@ public class LocationService extends Service implements  LocationListener {
                                 getOutNotification.showNotification();
 
                                 //푸시알림
-                                /*
+
                                 SharedPreferences prefs = getSharedPreferences("person_name",0);
                                 String name = prefs.getString("name","");
-                                task4=new PushNoti();//생성
-                                task4.execute("http://" + IP_ADDRESS + "/push.php", UUID,name);//친구에게 노티보냄*/
-
+                                pushNoti = new PushNoti(UUID, name);
+                                pushNoti.execute("http://"+IP_ADDRESS+"/push");//AsyncTask 시작시킴
                                 geo_check=false;
                             }
                         }

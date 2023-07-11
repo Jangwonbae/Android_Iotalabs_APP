@@ -43,6 +43,7 @@ import com.google.maps.android.PolyUtil;
 import com.iotalabs.geoar.data.Clock;
 import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.data.StaticUUID;
+import com.iotalabs.geoar.util.fcm.PushNoti;
 import com.iotalabs.geoar.util.noti.NotificationCreator;
 import com.iotalabs.geoar.view.main.data.PersonLocation;
 
@@ -56,7 +57,9 @@ public class BackgroundLocationService extends Service implements LocationListen
     private final String TAG = "BackgroundService";
     private final String TAG_LOCATION = "TAG_LOCATION";
     private Context context;
-    private boolean stopService = false;
+
+    private PushNoti pushNoti;
+    private String IP_ADDRESS;
 
     protected LocationSettingsRequest mLocationSettingsRequest;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -81,7 +84,7 @@ public class BackgroundLocationService extends Service implements LocationListen
         context = this;
         UUID= StaticUUID.UUID;
         area = Constants.area;
-
+        IP_ADDRESS= Constants.IP_ADDRESS;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         personLocation = PersonLocation.getInstance();
@@ -103,7 +106,7 @@ public class BackgroundLocationService extends Service implements LocationListen
     @Override
     public void onDestroy() {//서비스를 소멸시킬 때 호출
         Log.e(TAG, "Service Stopped");
-        stopService = true;
+
         if (mFusedLocationClient != null) {
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Log.e(TAG_LOCATION, "Location Update Callback Removed");
@@ -163,12 +166,10 @@ public class BackgroundLocationService extends Service implements LocationListen
                             getApplicationContext(), channelId, channelName);//노티 생성
                     getOutNotification.showNotification();
 
-                    //푸시알림
-                                /*
-                                SharedPreferences prefs = getSharedPreferences("person_name",0);
-                                String name = prefs.getString("name","");
-                                task4=new PushNoti();//생성
-                                task4.execute("http://" + IP_ADDRESS + "/push.php", UUID,name);//친구에게 노티보냄*/
+                    SharedPreferences prefs = getSharedPreferences("person_name",0);
+                    String name = prefs.getString("name","");
+                    pushNoti = new PushNoti(UUID, name);
+                    pushNoti.execute("http://"+IP_ADDRESS+"/push");//AsyncTask 시작시킴
 
                     geo_check=false;
                 }
