@@ -51,11 +51,11 @@ public class MapItem {
         List<LatLng> insideUsers = null;
         for(LatLng latlng:users ) {
             boolean inside= PolyUtil.containsLocation(latlng ,area,true);
-            if(inside) {//내위치가 지정구역안에 있는지 체크
+            if(inside) {//지정구역안에 있는지 체크
                 insideUsers = new ArrayList<>();
-                insideUsers.add(latlng);
+                insideUsers.add(latlng);//안에 있다면 새로운 리스트에 넣고
             }
-        }
+        }//위에서 걸러진 리스트로 히트맵 생성
         provider = new HeatmapTileProvider.Builder().data(insideUsers).gradient(gradient).build();
         map.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
     }
