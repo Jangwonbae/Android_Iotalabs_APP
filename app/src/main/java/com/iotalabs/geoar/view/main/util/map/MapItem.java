@@ -14,10 +14,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.PolyUtil;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.iotalabs.geoar.data.Constants;
 import com.iotalabs.geoar.view.main.data.FriendData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapItem {
@@ -44,8 +47,16 @@ public class MapItem {
     }
 
     public void createHeatMap(List<LatLng> users){
-
-        provider = new HeatmapTileProvider.Builder().data(users).gradient(gradient).build();
+        List<LatLng> area = Constants.area;
+        List<LatLng> insideUsers = null;
+        for(LatLng latlng:users ) {
+            boolean inside= PolyUtil.containsLocation(latlng ,area,true);
+            if(inside) {//내위치가 지정구역안에 있는지 체크
+                insideUsers = new ArrayList<>();
+                insideUsers.add(latlng);
+            }
+        }
+        provider = new HeatmapTileProvider.Builder().data(insideUsers).gradient(gradient).build();
         map.addTileOverlay(new TileOverlayOptions().tileProvider(provider));//히트맵 만듬
     }
     public void createMarker(FriendData fData){
