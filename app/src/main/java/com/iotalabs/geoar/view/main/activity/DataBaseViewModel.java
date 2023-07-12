@@ -12,12 +12,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.iotalabs.geoar.data.Clock;
 import com.iotalabs.geoar.view.main.data.PersonLocation;
 import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.view.main.data.User;
 import com.iotalabs.geoar.view.main.data.FriendData;
 import com.rugovit.eventlivedata.MutableEventLiveData;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
 public class DataBaseViewModel extends ViewModel {
     private DatabaseReference mDatabase;
     private String UUID;
+    private Clock clock;
     private final String formatUUID = "[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}";
     public static MutableEventLiveData<List<LatLng>> allUserLocationList = new MutableEventLiveData<>();//맵에서 구독할 사람위치 리스트
     public static MutableEventLiveData<ArrayList<FriendData>> myFriendList; //친구리스트에서 구독할 친구 리스트
@@ -36,6 +39,7 @@ public class DataBaseViewModel extends ViewModel {
     public DataBaseViewModel() {
         UUID = StaticUUID.UUID;
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        clock = new Clock();
 
     }
     public MutableEventLiveData<ArrayList<FriendData>> getMyFriendList(){
@@ -72,15 +76,20 @@ public class DataBaseViewModel extends ViewModel {
                         user.setFollows(map);
                         allUserList.add(user);
                     }
+
                     //전체 사람위치,친구정보 정리
                     List<LatLng> tempLatLng = new ArrayList<LatLng>();
                     ArrayList<FriendData> tempFriendList = new ArrayList<FriendData>();
                     for (User user : allUserList) {
                         if (!user.getUserUUID().equals(UUID)) {//내 UUID가 아니면 위치 받아옴 (나를 제외한 모든 사람의 위치)
-
-                            //String curTime = new Clock().getTime();//시간값 계산해서 1일이상인 데이터는 표시x
-                            tempLatLng.add(new LatLng(Double.parseDouble(user.getPersonLocation().getLatitude()),//위도
-                                    Double.parseDouble(user.getPersonLocation().getLongitude())));//경도
+                            try {
+                                if(clock.diffTime(user.getPersonLocation().getTime()) < 30){ //30분
+                                    tempLatLng.add(new LatLng(Double.parseDouble(user.getPersonLocation().getLatitude()),//위도
+                                            Double.parseDouble(user.getPersonLocation().getLongitude())));//경도
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         } else {//내 UUID면 친구정보를 봄 (내 친구의 정보)
                             for (Map.Entry<String, String> follow : user.getFollows().entrySet()) {
                                 tempFriendList.add(new FriendData(follow.getKey(), follow.getValue()));//UUID와 설정된 이름을 저장
@@ -134,7 +143,6 @@ public class DataBaseViewModel extends ViewModel {
                 toastMessage.setValue("친구등록 QR코드가 아닙니다.");
             }
         }
-
     }
 
     public void removeFriend(String friendUUID) {
