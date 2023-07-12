@@ -72,6 +72,7 @@ public class BackgroundLocationService extends Service implements LocationListen
     private String str_latitude = "0.0", str_longitude = "0.0";
     private List<LatLng> area;
     private boolean geo_check = false;//default를 false로 해야 어플 처음 시작할 때 밖에 있으면 알림이 안뜸
+    private static int serviceInterval = 60*3;//3분
     private DatabaseReference mDatabase;
     private PersonLocation personLocation;
     private NotificationCreator getOutNotification;
@@ -119,9 +120,9 @@ public class BackgroundLocationService extends Service implements LocationListen
     protected void setAlarmTimer() {
         final Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.SECOND, 60);//60초
+        c.add(Calendar.SECOND, serviceInterval);
         Intent intent = new Intent(this, AlarmRecever.class);
-        PendingIntent sender = PendingIntent.getBroadcast(this, 0,intent,0);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), sender);

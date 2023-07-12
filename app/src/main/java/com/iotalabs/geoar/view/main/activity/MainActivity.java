@@ -57,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 
         initBottomNavigation(); // 첫 프래그먼트 화면 지정
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         //pres 상태를 on으로 변경하여 BackgroundLoactionService의 재실행을 종료
         prefs =  PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor =prefs.edit();
@@ -64,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         //앱이 켜져있는 동안엔 10초마다 위치정보를 전송하는  LocationService 실행
         LocationServiceStart();
-        Log.d("create","ssssssssssssssssssss");
     }
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         LocationServiceStop();
         //pres 상태를 off로 변경하여 BackgroundLoactionService의 재실행
         SharedPreferences.Editor editor =prefs.edit();
@@ -77,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         //종료시 3분마다 실행되는 BackgroundLocationService실행
         startService(new Intent(this,BackgroundLocationService.class));
     }
+
+
 
     // 프레그먼트 교체
     public void initBottomNavigation() {
@@ -141,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
     //백그라운드 서비스 종료
     public void LocationServiceStop() {
-        Log.d("destory","ssssssssssssssssssss");
         if (serviceIntent != null) {
             stopService(serviceIntent);
             serviceIntent = null;
