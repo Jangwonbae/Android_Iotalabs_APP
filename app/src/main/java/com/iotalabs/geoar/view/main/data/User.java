@@ -8,7 +8,6 @@ public class User {
     private String UserUUID;
     private PersonLocation personLocation;
     private HashMap<String, String> follows;
-    private String token;
 
     public User(){
         follows = new HashMap<>();
@@ -21,9 +20,6 @@ public class User {
         return personLocation;
     }
 
-    public String getToken() {
-        return token;
-    }
 
     public HashMap<String, String> getFollows() {
         return follows;
@@ -35,10 +31,6 @@ public class User {
 
     public void setPersonLocation(PersonLocation personLocation) {
         this.personLocation = personLocation;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public void setFollows(HashMap<String, String> follows) {

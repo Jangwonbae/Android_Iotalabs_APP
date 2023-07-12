@@ -59,8 +59,7 @@ public class DataBaseViewModel extends ViewModel {
                     List<User> allUserList = new ArrayList<User>();
                     //USER노드 밑에 있는 자식들을 하나씩 가져옴
                     for (DataSnapshot userSnapshot : task.getResult().child("USER").getChildren()) {
-                        //token
-                        User user = userSnapshot.getValue(User.class);
+                        User user = new User();
                         //UUID
                         user.setUserUUID(userSnapshot.getKey());
                         //latitude, longitude, time
