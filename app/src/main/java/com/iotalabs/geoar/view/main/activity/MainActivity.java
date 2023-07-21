@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         binding.setViewModel(dataBaseViewModel);
+
+
         new FloatingButtonCreator(this,binding);//플로팅버튼 초기화
 
         new ClassUUID(getBaseContext());//UUID를 static으로 저장
@@ -92,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         //최초로 보이는 프래그먼트
         mapFragment = new MapFragment();
         fragmentManager = getSupportFragmentManager();
-        //setReorderingAllowed(true)는 transaction과 관련된 프래그먼트의 상태 변경을 최적화하여 애니메이션과 전환이 올바르게 작동하도록 함
         fragmentManager.beginTransaction().replace(R.id.fragment_container_view_main, mapFragment).commit();
 
         //네비게이션바 클릭리스너

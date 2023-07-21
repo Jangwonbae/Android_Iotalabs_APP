@@ -22,7 +22,12 @@ public class MyAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return data.size();
+        if(data==null){
+            return 0;
+        }else{
+            return data.size();
+        }
+
     }
 
     @Override

@@ -68,6 +68,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         dataBaseViewModel = new ViewModelProvider(this).get(DataBaseViewModel.class);
         //뷰모델 연결
         binding.setViewModel(dataBaseViewModel);
+
+
         initMapFloatingButton();//플로팅버튼 초기화
         users=new ArrayList<>();
         mapFriends=new ArrayList<>();

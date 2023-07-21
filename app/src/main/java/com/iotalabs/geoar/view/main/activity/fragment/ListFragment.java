@@ -29,7 +29,7 @@ public class ListFragment extends Fragment {
     private FragmentListBinding binding;
     private DataBaseViewModel dataBaseViewModel;
     private MyAdapter myAdapter;
-    public ArrayList<FriendData> friends = null;
+    public ArrayList<FriendData> friends = new ArrayList<>();
     private SwipeMenuListView swipeMenuListView;
     private SwipeMenuListCreator swipeMenuListCreator;
 
