@@ -112,7 +112,8 @@ public class BackgroundLocationService extends Service implements LocationListen
             mFusedLocationClient.removeLocationUpdates(mLocationCallback);
             Log.e(TAG_LOCATION, "Location Update Callback Removed");
         }
-        if (prefs.getBoolean("switch_LocationService", true) && !prefs.getBoolean("onState",false)) {//세팅에서 온상태면(백그라운드 위치사용) and 어플이 꺼진상태면
+        if (prefs.getBoolean("switch_LocationService", true) && !prefs.getBoolean("onState",false)) {
+            //세팅에서 온상태면(백그라운드 위치사용) and 어플이 꺼진상태면
             setAlarmTimer();
         }
         super.onDestroy();

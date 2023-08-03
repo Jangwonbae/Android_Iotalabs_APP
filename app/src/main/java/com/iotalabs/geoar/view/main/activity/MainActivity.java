@@ -52,9 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
         new FloatingButtonCreator(this,binding);//플로팅버튼 초기화
 
-        new ClassUUID(getBaseContext());//UUID를 static으로 저장
+
         new DataBaseViewModel().getAllUserData();//데이터받기
-        new Authenticator().authFireBase();//인증
+
+
 
         binding.frameLayoutMainWhole.bringToFront();//버튼이 있는 fragment가 제일 앞으로 오도록 설정
 

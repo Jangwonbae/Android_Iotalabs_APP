@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.iotalabs.geoar.data.ClassUUID;
 import com.iotalabs.geoar.data.StaticUUID;
 import com.iotalabs.geoar.util.noti.NotificationCreator;
 
@@ -20,7 +21,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-
+        new ClassUUID(getBaseContext());//UUID를 static으로 저장
         UUID = StaticUUID.UUID;
         mDatabase = FirebaseDatabase.getInstance().getReference();;
         mDatabase.child("USER").child(UUID).child("token").setValue(token);
